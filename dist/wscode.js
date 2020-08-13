@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.1-alpha.0
+* version 2.0.1
 *
 * build Fri May 08 2020
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Thu Aug 13 2020 17:52:37 GMT+0800 (GMT+08:00)
+* Date:Thu Aug 13 2020 22:48:51 GMT+0800 (GMT+08:00)
 */
 
 "use strict";
@@ -493,9 +493,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     var drawerSelect = function drawerSelect(beginLeftNum, endLeftNum, lineNum) {
       var xy1 = _this4.$$calcCanvasXY(beginLeftNum, lineNum);
 
-      var xy2 = _this4.$$calcCanvasXY(endLeftNum, lineNum);
+      var xy2 = _this4.$$calcCanvasXY(endLeftNum, lineNum); // 如何一行过少，前置一点点选中显示
 
-      ctx.fillRect(xy1.x, xy1.y, xy2.x - xy1.x, 21);
+
+      if (beginLeftNum == endLeftNum && beginLeftNum == 0) {
+        ctx.fillRect(xy1.x, xy1.y, 5, 21);
+      } else {
+        ctx.fillRect(xy1.x, xy1.y, xy2.x - xy1.x, 21);
+      }
     }; // 如果选中区域为空，不用绘制
 
 

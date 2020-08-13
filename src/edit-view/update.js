@@ -74,7 +74,12 @@ export function updateSelectView() {
         let xy1 = this.$$calcCanvasXY(beginLeftNum, lineNum);
         let xy2 = this.$$calcCanvasXY(endLeftNum, lineNum);
 
-        ctx.fillRect(xy1.x, xy1.y, xy2.x - xy1.x, 21);
+        // 如何一行过少，前置一点点选中显示
+        if (beginLeftNum == endLeftNum && beginLeftNum == 0) {
+            ctx.fillRect(xy1.x, xy1.y, 5, 21);
+        } else {
+            ctx.fillRect(xy1.x, xy1.y, xy2.x - xy1.x, 21);
+        }
 
     };
 
