@@ -55,7 +55,7 @@ export default function () {
     };
 
     // 鼠标按下的时候，记录开始光标位置并标记鼠标按下动作
-    xhtml.bind(document, 'mousedown', event => {
+    xhtml.bind(this._el, 'mousedown', event => {
         mouseDown = true;
         this.__cursor2 = this.__cursor1 = calcCursor(event);
 
@@ -67,7 +67,7 @@ export default function () {
     });
 
     // 移动的时候不停的同步结束光标位置
-    xhtml.bind(document, 'mousemove', event => {
+    xhtml.bind(this._el, 'mousemove', event => {
         if (!mouseDown) return;
         this.__cursor2 = calcCursor(event);
 
@@ -77,8 +77,8 @@ export default function () {
     });
 
     // 鼠标分开或移出的时候，标记鼠标放开
-    xhtml.bind(document, 'mouseup', () => mouseDown = false);
-    xhtml.bind(document, 'mouseout', () => mouseDown = false);
+    xhtml.bind(this._el, 'mouseup', () => mouseDown = false);
+    xhtml.bind(this._el, 'mouseout', () => mouseDown = false);
 
     // 点击编辑界面
     xhtml.bind(this._el, 'click', event => {

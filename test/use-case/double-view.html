@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多编辑界面 | 用例测试</title>
+    <script src="../../dist/wscode.js"></script>
+    <link rel="shortcut icon" href="../../logo.png">
+    <style>
+        div.wscode {
+            width: 400px;
+            height: 300px;
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wscode1" class='wscode'></div>
+    <div id="wscode2" class='wscode'></div>
+
+    <script>
+
+        var wscode1 = new WSCode({
+            el: document.getElementById('wscode1'),
+            content: "第一个编辑器\n输入内容"
+        });
+
+        var wscode2 = new WSCode({
+            el: document.getElementById('wscode2'),
+            content: "第二个编辑器\n输入内容"
+        });
+
+        console.log(wscode1, wscode2);
+
+    </script>
+
+</body>
+
+</html>

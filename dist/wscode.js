@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.0
+* version 2.0.1-alpha.0
 *
 * build Fri May 08 2020
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Mon Jul 27 2020 10:35:31 GMT+0800 (GMT+08:00)
+* Date:Thu Aug 13 2020 17:52:37 GMT+0800 (GMT+08:00)
 */
 
 "use strict";
@@ -763,7 +763,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     }; // 鼠标按下的时候，记录开始光标位置并标记鼠标按下动作
 
 
-    xhtml.bind(document, 'mousedown', function (event) {
+    xhtml.bind(this._el, 'mousedown', function (event) {
       mouseDown = true;
       _this5.__cursor2 = _this5.__cursor1 = calcCursor(event);
 
@@ -773,17 +773,17 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       _this5.$$updateSelectView();
     }); // 移动的时候不停的同步结束光标位置
 
-    xhtml.bind(document, 'mousemove', function (event) {
+    xhtml.bind(this._el, 'mousemove', function (event) {
       if (!mouseDown) return;
       _this5.__cursor2 = calcCursor(event); // 绘制选中效果
 
       _this5.$$updateSelectView();
     }); // 鼠标分开或移出的时候，标记鼠标放开
 
-    xhtml.bind(document, 'mouseup', function () {
+    xhtml.bind(this._el, 'mouseup', function () {
       return mouseDown = false;
     });
-    xhtml.bind(document, 'mouseout', function () {
+    xhtml.bind(this._el, 'mouseout', function () {
       return mouseDown = false;
     }); // 点击编辑界面
 
