@@ -215,6 +215,9 @@ export default function () {
             }
         }
 
+        // 只读模式需要拦截部分快捷键
+        if (this._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return;
+
         // 进入常规快捷键
 
         switch (keyStringCode) {

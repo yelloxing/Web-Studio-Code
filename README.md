@@ -111,7 +111,10 @@ var wscode = new WSCode({
     },
 
     // 设置一个tab表示多少个空格（可选，默认4）
-    tabSpace: number
+    tabSpace: number,
+
+    // 是否只读（默认false,如果设置true表示当前编辑器可以选择复制等操作，不可以进行内容修改）
+    readonly:boolean
 
 });
 ```

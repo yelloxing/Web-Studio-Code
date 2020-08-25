@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.1
+* version 2.0.3
 *
 * build Fri May 08 2020
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Thu Aug 13 2020 22:48:51 GMT+0800 (GMT+08:00)
+* Date:Tue Aug 25 2020 15:01:26 GMT+0800 (GMT+08:00)
 */
 
 "use strict";
@@ -398,7 +398,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       autocorrect: "off",
       autocapitalize: "off",
       spellcheck: "false"
-    }); // 显示区域
+    });
+
+    if (this._readonly) {
+      xhtml.attr(this.__focusDOM, {
+        readonly: true
+      });
+    } // 显示区域
+
 
     this.__showDOM = xhtml.appendTo(this._el, "<div></div>");
     xhtml.css(this.__showDOM, {
@@ -422,8 +429,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       left: 40 + this.$$textWidth(this._contentArray[this.__lineNum]) + "px",
       top: 10 + this.__lineNum * 21 + "px"
     });
-
-    this.__focusDOM.focus();
   } // 更新编辑器内容视图
 
 
@@ -474,11 +479,15 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         this.__showDOM.innerHTML = template;
       }
 
-    this.__diff = "not update"; // 修改当前编辑的行
+    this.__diff = "not update";
+    var tempLineDom = this.__showDOM.childNodes[this.__lineNum]; // 修改当前编辑的行
 
-    if (this.__lineDom) this.__lineDom.style.backgroundColor = "rgba(0, 0, 0, 0)";
-    this.__lineDom = this.__showDOM.childNodes[this.__lineNum];
-    this.__lineDom.style.backgroundColor = this._colorEdit;
+    if (!this._readonly && this.__lineDom) {
+      this.__lineDom.style.backgroundColor = "rgba(0, 0, 0, 0)";
+      tempLineDom.style.backgroundColor = this._colorEdit;
+    }
+
+    this.__lineDom = tempLineDom;
   } // 更新编辑器选中视图
 
 
@@ -900,8 +909,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         } else {
           _this5.__helpInputDOM.innerHTML = '';
         }
-      } // 进入常规快捷键
+      } // 只读模式需要拦截部分快捷键
 
+
+      if (_this5._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return; // 进入常规快捷键
 
       switch (keyStringCode) {
         // 全选
@@ -1276,6 +1287,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
       this._tabSpace = options.tabSpace || 4;
       /*设置一个tab表示多少个空格*/
+
+      this._readonly = options.readonly || false;
+      /*是否只读*/
       // 文本
 
       this._contentArray = isString(options.content) ? (this.$$filterText(options.content) + "").split("\n") : [""]; // 着色方法

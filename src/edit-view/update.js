@@ -53,10 +53,14 @@ export function updateView() {
 
     this.__diff = "not update";
 
+    let tempLineDom = this.__showDOM.childNodes[this.__lineNum];
     // 修改当前编辑的行
-    if (this.__lineDom) this.__lineDom.style.backgroundColor = "rgba(0, 0, 0, 0)";
-    this.__lineDom = this.__showDOM.childNodes[this.__lineNum];
-    this.__lineDom.style.backgroundColor = this._colorEdit;
+    if (!this._readonly && this.__lineDom) {
+        this.__lineDom.style.backgroundColor = "rgba(0, 0, 0, 0)";
+        tempLineDom.style.backgroundColor = this._colorEdit;
+    }
+    this.__lineDom = tempLineDom;
+
 
 };
 
