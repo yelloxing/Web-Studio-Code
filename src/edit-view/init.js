@@ -79,6 +79,12 @@ export function initDom() {
         spellcheck: "false"
     });
 
+    if (this._readonly) {
+        xhtml.attr(this.__focusDOM, {
+            readonly: true
+        });
+    }
+
     // 显示区域
     this.__showDOM = xhtml.appendTo(this._el, "<div></div>");
 
@@ -109,6 +115,5 @@ export function initView() {
         left: (40 + this.$$textWidth(this._contentArray[this.__lineNum])) + "px",
         top: (10 + this.__lineNum * 21) + "px"
     });
-    this.__focusDOM.focus();
 
 };

@@ -58,6 +58,7 @@ let wscode = function (options) {
         this._fontFamily = options["font-family"] || "新宋体"; /*字体*/
         this._fontWeight = options["font-weight"] || 600;/*字重*/
         this._tabSpace = options.tabSpace || 4;/*设置一个tab表示多少个空格*/
+        this._readonly = options.readonly || false;/*是否只读*/
 
         // 文本
         this._contentArray = isString(options.content) ? (this.$$filterText(options.content) + "").split("\n") : [""];
