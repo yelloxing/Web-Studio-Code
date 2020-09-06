@@ -146,6 +146,10 @@ wscode.updated(callback);
 wscode.input(content[, cursor, number]);
 ```
 
+## 相关插件
+
+- [wscode-prettify](https://github.com/yelloxing/wscode-prettify)：通用的代码着色器
+
 ## 开源协议
 
 [MIT](https://github.com/yelloxing/Web-Studio-Code/blob/master/LICENSE)
