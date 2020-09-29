@@ -146,9 +146,10 @@ wscode.updated(callback);
 wscode.input(content[, cursor, number]);
 ```
 
-## 相关插件
+## 相关项目
 
 - [wscode-prettify](https://github.com/yelloxing/wscode-prettify)：通用的代码着色器
+- [Open-Code-Editor](https://github.com/yelloxing/Open-Code-Editor)：一个小巧且可个性化配置的代码编辑器
 
 ## 开源协议
 
