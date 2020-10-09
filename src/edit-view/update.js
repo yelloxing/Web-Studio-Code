@@ -25,13 +25,13 @@ export function updateView() {
         // 追加不足的行
         if (this.__diff.beginNum > 0) {
             for (let i = this.__formatData.length - 1 - this.__diff.endNum; i >= this.__diff.beginNum; i--) {
-                xhtml.after(lineDoms[this.__diff.beginNum - 1], this.$$toTemplate(this.__formatData[i], i));
+                xhtml.after(lineDoms[this.__diff.beginNum - 1], this.$$toTemplate(this.__formatData[i], i, this._noLineNumber));
             }
         } else {
 
             // 如果开头没有结点保留，为了简单，我们直接采用append方法追加
             for (let i = 0; i < this.__formatData.length - this.__diff.endNum; i++) {
-                xhtml.appendTo(this.__showDOM, this.$$toTemplate(this.__formatData[i], i));
+                xhtml.appendTo(this.__showDOM, this.$$toTemplate(this.__formatData[i], i, this._noLineNumber));
             }
 
         }
@@ -47,7 +47,7 @@ export function updateView() {
     // 有时候，可能直接替换更快
     else if (this.__diff != "not update") {
         let template = "";
-        this.__formatData.forEach((line, index) => { template += this.$$toTemplate(line, index); });
+        this.__formatData.forEach((line, index) => { template += this.$$toTemplate(line, index, this._noLineNumber); });
         this.__showDOM.innerHTML = template;
     }
 

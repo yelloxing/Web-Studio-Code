@@ -51,12 +51,14 @@ export function selectIsNotBlank() {
 
 // 根据内容生成模板
 
-export function toTemplate(line, index) {
+export function toTemplate(line, index, noLineNumber) {
     let template = "";
 
     template += "<div style='min-width: fit-content;white-space: nowrap;line-height:21px;height:21px;'>";
 
-    template += "<em style='color:" + this._colorNumber + ";user-select: none;display:inline-block;font-style:normal;width:35px;text-align:right;margin-right:5px;'>" + (index + 1) + "</em>";
+    let lineStyle = noLineNumber ? "font-size:0;" : "";
+
+    template += "<em style='" + lineStyle + "color:" + this._colorNumber + ";user-select: none;display:inline-block;font-style:normal;width:35px;text-align:right;margin-right:5px;'>" + (index + 1) + "</em>";
 
     line.forEach(text => {
 
@@ -92,6 +94,6 @@ export function getInputMessage(wscode) {
 
         // 一行文本的高
         lineHeight: 21
-        
+
     };
 };

@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.3
+* version 2.0.4
 *
 * build Fri May 08 2020
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Tue Aug 25 2020 15:01:26 GMT+0800 (GMT+08:00)
+* Date:Fri Oct 09 2020 13:07:46 GMT+0800 (GMT+08:00)
 */
 
 "use strict";
@@ -298,12 +298,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   } // 根据内容生成模板
 
 
-  function toTemplate(line, index) {
+  function toTemplate(line, index, noLineNumber) {
     var _this = this;
 
     var template = "";
     template += "<div style='min-width: fit-content;white-space: nowrap;line-height:21px;height:21px;'>";
-    template += "<em style='color:" + this._colorNumber + ";user-select: none;display:inline-block;font-style:normal;width:35px;text-align:right;margin-right:5px;'>" + (index + 1) + "</em>";
+    var lineStyle = noLineNumber ? "font-size:0;" : "";
+    template += "<em style='" + lineStyle + "color:" + this._colorNumber + ";user-select: none;display:inline-block;font-style:normal;width:35px;text-align:right;margin-right:5px;'>" + (index + 1) + "</em>";
     line.forEach(function (text) {
       var contentText = text.content; // 提前对特殊字符进行处理
 
@@ -453,12 +454,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
       if (this.__diff.beginNum > 0) {
         for (var _i = this.__formatData.length - 1 - this.__diff.endNum; _i >= this.__diff.beginNum; _i--) {
-          xhtml.after(lineDoms[this.__diff.beginNum - 1], this.$$toTemplate(this.__formatData[_i], _i));
+          xhtml.after(lineDoms[this.__diff.beginNum - 1], this.$$toTemplate(this.__formatData[_i], _i, this._noLineNumber));
         }
       } else {
         // 如果开头没有结点保留，为了简单，我们直接采用append方法追加
         for (var _i2 = 0; _i2 < this.__formatData.length - this.__diff.endNum; _i2++) {
-          xhtml.appendTo(this.__showDOM, this.$$toTemplate(this.__formatData[_i2], _i2));
+          xhtml.appendTo(this.__showDOM, this.$$toTemplate(this.__formatData[_i2], _i2, this._noLineNumber));
         }
       } // 更新行号
 
@@ -473,7 +474,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         var template = "";
 
         this.__formatData.forEach(function (line, index) {
-          template += _this3.$$toTemplate(line, index);
+          template += _this3.$$toTemplate(line, index, _this3._noLineNumber);
         });
 
         this.__showDOM.innerHTML = template;
@@ -1290,6 +1291,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
       this._readonly = options.readonly || false;
       /*是否只读*/
+
+      this._noLineNumber = options.noLineNumber || false;
+      /*是否隐藏行号*/
       // 文本
 
       this._contentArray = isString(options.content) ? (this.$$filterText(options.content) + "").split("\n") : [""]; // 着色方法
