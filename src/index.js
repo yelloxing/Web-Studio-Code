@@ -59,6 +59,7 @@ let wscode = function (options) {
         this._fontWeight = options["font-weight"] || 600;/*字重*/
         this._tabSpace = options.tabSpace || 4;/*设置一个tab表示多少个空格*/
         this._readonly = options.readonly || false;/*是否只读*/
+        this._noLineNumber = options.noLineNumber || false;/*是否隐藏行号*/
 
         // 文本
         this._contentArray = isString(options.content) ? (this.$$filterText(options.content) + "").split("\n") : [""];
