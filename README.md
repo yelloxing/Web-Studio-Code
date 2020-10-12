@@ -149,6 +149,17 @@ wscode.updated(callback);
 wscode.input(content[, cursor, number]);
 ```
 
+- 触发编辑器命令
+
+```js
+/**
+ * 参数：terminalString 字符串类型，表示命令语句，有以下可选：
+ *  1.'ctrl+a':全选
+ *  2.'delete':删除当前选中的内容
+ */
+wscode.terminal(terminalString);
+```
+
 ## 相关项目
 
 - [wscode-prettify](https://github.com/yelloxing/wscode-prettify)：通用的代码着色器

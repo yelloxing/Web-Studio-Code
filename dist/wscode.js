@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.4
+* version 2.1.0
 *
 * build Fri May 08 2020
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Fri Oct 09 2020 13:07:46 GMT+0800 (GMT+08:00)
+* Date:Mon Oct 12 2020 11:50:44 GMT+0800 (GMT+08:00)
 */
 
 "use strict";
@@ -125,8 +125,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }
     },
     // 触发事件
-    "trigger": function trigger(dom, eventType) {
-      var event; //创建event的对象实例。
+    "trigger": function trigger(dom, eventType, terminal) {
+      var event; // 为命令行准备的
+
+      if (arguments.length > 2) {
+        dom.wscode_terminal = terminal;
+      } //创建event的对象实例。
+
 
       if (document.createEventObject) {
         // IE浏览器支持fireEvent方法
@@ -899,7 +904,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     }); // 处理键盘控制
 
     xhtml.bind(this._el, 'keydown', function (event) {
-      var keyStringCode = keyString(event); // 辅助输入前置拦截
+      var terminal = _this5._el.wscode_terminal;
+      var keyStringCode = terminal == 'none' ? keyString(event) : terminal;
+      _this5._el.wscode_terminal = 'none'; // 辅助输入前置拦截
 
       if (_this5.__helpInputDOM.innerHTML != '') {
         var __helpInputEvent = _this5.__helpInputEvent[keyStringCode];
@@ -911,9 +918,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           _this5.__helpInputDOM.innerHTML = '';
         }
       } // 只读模式需要拦截部分快捷键
+      // 命令行不拦截
 
 
-      if (_this5._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return; // 进入常规快捷键
+      if (terminal == 'none' && _this5._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return; // 进入常规快捷键
 
       switch (keyStringCode) {
         // 全选
@@ -1259,7 +1267,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         return textString;
       };
 
-      this._el = options.el; // 公共配置
+      this._el = options.el;
+      this._el.wscode_terminal = 'none'; // 公共配置
 
       options.color = options.color || {};
       this._colorBackground = options.color.background || "#d6d6e4";
@@ -1374,6 +1383,30 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
       _this6.$$initView();
+    }; // 触发编辑器命令
+
+
+    this.terminal = function (terminalString) {
+      switch (terminalString) {
+        case 'ctrl+a':
+          {
+            xhtml.trigger(_this6._el, 'keydown', 'ctrl+a');
+            break;
+          }
+
+        case 'delete':
+          {
+            xhtml.trigger(_this6._el, 'keydown', 'backspace');
+            break;
+          }
+
+        default:
+          {
+            console.error('Undefined command!');
+          }
+      }
+
+      return _this6;
     };
   }; // 挂载辅助方法
 

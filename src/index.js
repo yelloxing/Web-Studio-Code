@@ -46,6 +46,7 @@ let wscode = function (options) {
         let format = textString => textString;
 
         this._el = options.el;
+        this._el.wscode_terminal = 'none';
 
         // 公共配置
         options.color = options.color || {};
@@ -151,6 +152,27 @@ let wscode = function (options) {
 
         // 更新光标位置
         this.$$initView();
+
+    };
+
+    // 触发编辑器命令
+    this.terminal = (terminalString) => {
+
+        switch (terminalString) {
+            case 'ctrl+a': {
+                xhtml.trigger(this._el, 'keydown', 'ctrl+a');
+                break;
+            }
+            case 'delete': {
+                xhtml.trigger(this._el, 'keydown', 'backspace');
+                break;
+            }
+            default: {
+                console.error('Undefined command!');
+            }
+
+        }
+        return this;
 
     };
 

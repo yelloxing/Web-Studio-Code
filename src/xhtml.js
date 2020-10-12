@@ -32,8 +32,13 @@ export default {
     },
 
     // 触发事件
-    "trigger": function (dom, eventType) {
+    "trigger": function (dom, eventType,terminal) {
         let event;
+
+        // 为命令行准备的
+        if(arguments.length>2){
+            dom.wscode_terminal=terminal;
+        }
 
         //创建event的对象实例。
         if (document.createEventObject) {
@@ -49,6 +54,7 @@ export default {
             event.initEvent(eventType, true, false);
             dom.dispatchEvent(event);
         }
+
     },
 
     // 变成结点

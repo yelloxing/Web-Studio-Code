@@ -199,7 +199,9 @@ export default function () {
     // 处理键盘控制
     xhtml.bind(this._el, 'keydown', event => {
 
-        let keyStringCode = keyString(event);
+        let terminal = this._el.wscode_terminal;
+        let keyStringCode = terminal == 'none' ? keyString(event) : terminal;
+        this._el.wscode_terminal = 'none';
 
         // 辅助输入前置拦截
 
@@ -216,7 +218,8 @@ export default function () {
         }
 
         // 只读模式需要拦截部分快捷键
-        if (this._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return;
+        // 命令行不拦截
+        if (terminal == 'none' && this._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return;
 
         // 进入常规快捷键
 

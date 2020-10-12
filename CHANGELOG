@@ -115,3 +115,7 @@ v2.0.4:
     date:2020-10-09
     changes:
       -  添加新的配置项noLineNumber用来设置当前编辑器界面行号是否可见，默认可见
+v2.1.0:
+    date:2020-10-12
+    changes:
+      -  新增命令行操作模式方法this.terminal()
