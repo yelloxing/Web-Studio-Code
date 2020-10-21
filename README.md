@@ -155,7 +155,11 @@ wscode.input(content[, cursor, number]);
 /**
  * 参数：terminalString 字符串类型，表示命令语句，有以下可选：
  *  1.'ctrl+a':全选
- *  2.'delete':删除当前选中的内容
+ *  2.'ctrl+c':复制
+ *  3.'ctrl+x':剪切
+ *  4.'delete':删除当前选中的内容
+ * 
+ * 温馨提示：需要注意的是，部分命令需要用户交互触发才可以成功，这主要是安全性问题导致的！
  */
 wscode.terminal(terminalString);
 ```

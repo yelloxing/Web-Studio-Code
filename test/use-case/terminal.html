@@ -18,6 +18,9 @@
 
 <body>
 
+  <input type="button" value="测试复制" onclick='doit1()'>
+  <input type="button" value="测试剪切" onclick='doit2()'>
+
   <div id="wscode1" class='wscode'></div>
 
   <script>
@@ -30,7 +33,13 @@
 
     window.wscode = wscode;
 
-    // wscode.terminal('ctrl+a');
+    function doit1() {
+      wscode.terminal('ctrl+a').terminal('ctrl+c');
+    }
+
+    function doit2() {
+      wscode.terminal('ctrl+a').terminal('ctrl+x');
+    }
 
     console.log(wscode);
 

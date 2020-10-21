@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.1.0
+* version 2.1.1
 *
 * build Fri May 08 2020
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Mon Oct 12 2020 11:50:44 GMT+0800 (GMT+08:00)
+* Date:Wed Oct 21 2020 14:41:31 GMT+0800 (GMT+08:00)
 */
 
 "use strict";
@@ -207,11 +207,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       try {
         var result = window.document.execCommand("copy", false, null);
 
-        if (result) {// console.log('已经复制到剪切板！');
-        } else {// console.log('复制到剪切板失败！');
-          }
+        if (result) {
+          console.log('已经复制到剪切板！');
+        } else {
+          console.log('复制到剪切板失败！');
+        }
       } catch (e) {
-        console.error(e); // console.log('复制到剪切板失败！');
+        console.error(e);
+        console.log('复制到剪切板失败！');
       }
 
       document.body.removeChild(el);
@@ -1391,6 +1394,18 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         case 'ctrl+a':
           {
             xhtml.trigger(_this6._el, 'keydown', 'ctrl+a');
+            break;
+          }
+
+        case 'ctrl+c':
+          {
+            xhtml.trigger(_this6._el, 'keydown', 'ctrl+c');
+            break;
+          }
+
+        case 'ctrl+x':
+          {
+            xhtml.trigger(_this6._el, 'keydown', 'ctrl+x');
             break;
           }
 

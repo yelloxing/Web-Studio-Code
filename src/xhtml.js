@@ -132,13 +132,13 @@ export default {
             let result = window.document.execCommand("copy", false, null);
 
             if (result) {
-                // console.log('已经复制到剪切板！');
+                console.log('已经复制到剪切板！');
             } else {
-                // console.log('复制到剪切板失败！');
+                console.log('复制到剪切板失败！');
             }
         } catch (e) {
             console.error(e);
-            // console.log('复制到剪切板失败！');
+            console.log('复制到剪切板失败！');
         }
 
         document.body.removeChild(el);

@@ -163,6 +163,14 @@ let wscode = function (options) {
                 xhtml.trigger(this._el, 'keydown', 'ctrl+a');
                 break;
             }
+            case 'ctrl+c': {
+                xhtml.trigger(this._el, 'keydown', 'ctrl+c');
+                break;
+            }
+            case 'ctrl+x': {
+                xhtml.trigger(this._el, 'keydown', 'ctrl+x');
+                break;
+            }
             case 'delete': {
                 xhtml.trigger(this._el, 'keydown', 'backspace');
                 break;
