@@ -36,22 +36,22 @@ module.exports = {
     // 定义任务
     task: {
 
-        init(cuf, pkg) {
+        init(hai2007_nodejs, pkg) {
 
-            cuf.print(pkg.name + "@" + pkg.version + " " + pkg.description);
+            hai2007_nodejs.print(pkg.name + "@" + pkg.version + " " + pkg.description);
 
             // 如果打包后的文件存在
-            if (fs.existsSync('./dist')) cuf.deleteSync('./dist');
+            if (fs.existsSync('./dist')) hai2007_nodejs.deleteSync('./dist');
 
-            cuf.log("\n-----------------------\n环境整理完毕，开始打包！\n-----------------------");
-            cuf.print("Date : " + new Date() + "\n");
+            hai2007_nodejs.log("\n-----------------------\n环境整理完毕，开始打包！\n-----------------------");
+            hai2007_nodejs.print("Date : " + new Date() + "\n");
 
         },
 
-        end(cuf) {
+        end(hai2007_nodejs) {
 
-            cuf.log("\n-----------------------\n打包完毕！\n-----------------------");
-            cuf.print("Date : " + new Date() + "\n\n");
+            hai2007_nodejs.log("\n-----------------------\n打包完毕！\n-----------------------");
+            hai2007_nodejs.print("Date : " + new Date() + "\n\n");
 
             // 打印文件大小
             const printFileSize = function (index, url) {
@@ -67,7 +67,7 @@ module.exports = {
                             else return (bytes / 1073741824).toFixed(3) + " GB";
                         })(stats.size);
 
-                        cuf.log("[" + index + "]    " + url + "    " + size);
+                        hai2007_nodejs.log("[" + index + "]    " + url + "    " + size);
                     }
 
                 });
@@ -82,15 +82,15 @@ module.exports = {
          * 第一步：模块打包
          * ----------------------
          */
-        bundle(cuf) {
+        bundle(hai2007_nodejs) {
             async function build(inputOptions, outputOptions) {
                 const bundle = await rollup.rollup(inputOptions);
                 await bundle.write(outputOptions);
 
-                cuf.error('模块打包完毕');
+                hai2007_nodejs.error('模块打包完毕');
             }
 
-            cuf.log("\n[1]模块打包:./dist/module.new.js\n");
+            hai2007_nodejs.log("\n[1]模块打包:./dist/module.new.js\n");
 
             build({
                 input: 'src/index.js',
@@ -121,17 +121,17 @@ module.exports = {
          * 第二步：babel转义
          * ----------------------
          */
-        babel(cuf, pkg) {
+        babel(hai2007_nodejs, pkg) {
 
-            cuf.log("\n[2]babel转义:./dist/module.new.js → ./dist/wscode.js\n");
+            hai2007_nodejs.log("\n[2]babel转义:./dist/module.new.js → ./dist/wscode.js\n");
 
             babel.transformFile("./dist/module.new.js", {}, function (err, result) {
                 if (!err) {
                     fs.writeFileSync("./dist/wscode.js", banner(pkg));
                     fs.appendFileSync("./dist/wscode.js", result.code);
-                    cuf.deleteSync("./dist/module.new.js");
+                    hai2007_nodejs.deleteSync("./dist/module.new.js");
 
-                    cuf.error('转义完毕');
+                    hai2007_nodejs.error('转义完毕');
                 } else {
                     console.log(err);
                 }
@@ -142,9 +142,9 @@ module.exports = {
          * 第三步：压缩代码
          * ----------------------
          */
-        uglifyjs(cuf, pkg) {
+        uglifyjs(hai2007_nodejs, pkg) {
 
-            cuf.log("\n[3]压缩代码:./dist/wscode.js → ./dist/wscode.min.js\n");
+            hai2007_nodejs.log("\n[3]压缩代码:./dist/wscode.js → ./dist/wscode.min.js\n");
 
             cp.exec("uglifyjs ./dist/wscode.js -m -o ./dist/uglifyjs.new.js", function (error) {
                 if (error) {
@@ -154,9 +154,9 @@ module.exports = {
                     fs.writeFileSync("./dist/wscode.min.js", banner(pkg));
                     fs.appendFileSync("./dist/wscode.min.js", fs.readFileSync("./dist/uglifyjs.new.js"));
 
-                    cuf.error('压缩完毕');
+                    hai2007_nodejs.error('压缩完毕');
                 }
-                cuf.deleteSync("./dist/uglifyjs.new.js");
+                hai2007_nodejs.deleteSync("./dist/uglifyjs.new.js");
             });
         }
 

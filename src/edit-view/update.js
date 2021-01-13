@@ -29,9 +29,9 @@ export function updateView() {
             }
         } else {
 
-            // 如果开头没有结点保留，为了简单，我们直接采用append方法追加
+            // 如果开头没有结点保留，为了简单，我们直接采用prependTo方法追加
             for (let i = 0; i < this.__formatData.length - this.__diff.endNum; i++) {
-                xhtml.appendTo(this.__showDOM, this.$$toTemplate(this.__formatData[i], i, this._noLineNumber));
+                xhtml.prependTo(this.__showDOM, this.$$toTemplate(this.__formatData[i], i, this._noLineNumber));
             }
 
         }

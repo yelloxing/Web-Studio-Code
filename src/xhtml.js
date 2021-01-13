@@ -68,10 +68,17 @@ export default {
         return null;
     },
 
-    // 追加结点
-    "appendTo": function (el, template) {
+     // 追加结点(内部结尾)
+     "appendTo": function (el, template) {
         let node = isElement(template) ? template : this.toNode(template);
         el.appendChild(node);
+        return node;
+    },
+
+    // 追加结点(内部开头)
+    "prependTo": function (el, template) {
+        let node = isElement(template) ? template : this.toNode(template);
+        el.insertBefore(node, el.childNodes[0]);
         return node;
     },
 

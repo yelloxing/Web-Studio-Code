@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.1.1
+* version 2.1.2
 *
 * build Fri May 08 2020
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Wed Oct 21 2020 14:41:31 GMT+0800 (GMT+08:00)
+* Date:Wed Jan 13 2021 17:05:48 GMT+0800 (GMT+08:00)
 */
 
 "use strict";
@@ -157,10 +157,16 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
       return null;
     },
-    // 追加结点
+    // 追加结点(内部结尾)
     "appendTo": function appendTo(el, template) {
       var node = isElement(template) ? template : this.toNode(template);
       el.appendChild(node);
+      return node;
+    },
+    // 追加结点(内部开头)
+    "prependTo": function prependTo(el, template) {
+      var node = isElement(template) ? template : this.toNode(template);
+      el.insertBefore(node, el.childNodes[0]);
       return node;
     },
     // 删除结点
@@ -465,9 +471,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           xhtml.after(lineDoms[this.__diff.beginNum - 1], this.$$toTemplate(this.__formatData[_i], _i, this._noLineNumber));
         }
       } else {
-        // 如果开头没有结点保留，为了简单，我们直接采用append方法追加
+        // 如果开头没有结点保留，为了简单，我们直接采用prependTo方法追加
         for (var _i2 = 0; _i2 < this.__formatData.length - this.__diff.endNum; _i2++) {
-          xhtml.appendTo(this.__showDOM, this.$$toTemplate(this.__formatData[_i2], _i2, this._noLineNumber));
+          xhtml.prependTo(this.__showDOM, this.$$toTemplate(this.__formatData[_i2], _i2, this._noLineNumber));
         }
       } // 更新行号
 
