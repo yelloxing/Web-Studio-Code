@@ -1,3 +1,5 @@
+> 本项目已经停止维护，获取最新版本的更新请使用兼容的新产品[Open-Web-Editor](https://github.com/hai2007/Open-Web-Editor)代替。
+
 <p align="center"><a href="https://github.com/yelloxing/Web-Studio-Code" target="_blank" rel="noopener noreferrer">
 <img width="400" src="https://yelloxing.github.io/Web-Studio-Code/logo.png" alt="Web Studio Code"></a></p>
 
