@@ -1,131 +1,31 @@
-No more records!
- -
- -
- -
-v1.3.2:
-    date:2020-05-13
+v0.1.0:
+    date:2020-12-08
     changes:
-      -  修复由于转义问题导致的<,>和&等特殊字符显示问题
-      -  修复由于滚动条导致的点击切行交互错误
-v1.3.3:
-    date:2020-05-13
+      - 初始化版本
+          1.框架主体设计并开发完毕
+          2.键盘交互、辅助输入和一些常用的配置项等
+v0.2.0:
+    date:2020-12-17
     changes:
-      -  添加字体font-family可配置
-      -  添加光标点击定位功能
-v1.3.4:
-    date:2020-05-14
-    changes:
-      -  优化光标控制（增加键盘上下键位置计算）
-      -  增加tab键，font-weight等配置接口
-      -  优化中文输入的时候输入口显示样式
-v1.4.0:
-    date:2020-05-16
-    changes:
-      -  预留lang配置选项，为内置语言提供接口
-      -  添加光标选择（删除，tab多行添加等）
-v1.4.1:
-    date:2020-05-17
-    changes:
-      -  添加复制、剪切等快捷键
-v1.4.2:
-    date:2020-05-17
-    changes:
-      -  修复复制或剪切后光标自动消失问题
-v1.5.1:
-    date:2020-05-18
-    changes:
-      -  添加内置着色（支持html+css+javascript）
-v1.5.2:
-    date:2020-05-19
-    changes:
-      -  修复初始化选择区域为空导致的错误
-      -  添加全选（ctrl + A）功能
-v1.5.3:
-    date:2020-05-22
-    changes:
-      -  修复javascript字符串着色错误
-      -  添加对css和javascript中边界的着色功能
-v1.5.4:
-    date:2020-05-25
-    changes:
-      -  针对css补充着色（完毕）
-v1.5.5:
-    date:2020-05-26
-    changes:
-      -  针对javascript补充着色（完毕）
-v1.5.6:
-    date:2020-05-26
-    changes:
-      -  补充javascript着色细节
-      -  修复ctrl+A功能BUG
-      -  修复issue2(https://github.com/yelloxing/Web-Studio-Code/issues/2)
-v1.6.0:
-    date:2020-06-03
-    changes:
-      -  添加对标准JSON的支持（着色和格式化开发完毕）
-v1.7.0:
-    date:2020-06-05
-    changes:
-      -  HTML格式化（内嵌套的CSS和ES无格式）
-v1.7.1:
-    date:2020-06-05
-    changes:
-      -  修复IE和Edge不支持透明色问题
-      -  修复IE浏览器对Symbol的支持问题
-v1.7.2:
-    date:2020-06-06
-    changes:
-      -  解决错误的HTML模板格式化卡顿问题
-v1.7.4:
-    date:2020-06-12
-    changes:
-      -  添加文本内容改变通知钩子`this.updated(callback);`
-v1.7.5:
-    date:2020-06-28
-    changes:
-      -  针对编辑器滚动后聚焦位置错误进行了修复
-v1.8.0:
-    date:2020-07-01
-    changes:
-      -  使用新的方式改写了着色后页面更新方式，大大提高了效率
-      -  第一次引入diff模式来选择性更新页面内容而不是一次性全部重新生成
-v1.8.1:
-    date:2020-07-01
-    changes:
-      -  修复在特殊情况下匹配的重复利用行数为负的情况
-v1.9.0:
-    date:2020-07-03
-    changes:
-      -  添加输入辅助方法（input配置提供：https://github.com/yelloxing/Web-Studio-Code/issues/9）
-      -  对整体的UI进行比较小的优化
-v2.0.0:
-    date:2020-07-27
-    changes:
-      -  废弃内置的语言支持，专心提供通用的编辑器
-v2.0.1:
-    date:2020-08-13
-    changes:
-      -  优化鼠标选择操作的时候空白行无选择效果的问题
-      -  修复同一个页面同时存在多于一个编辑界面的时候，鼠标操作串起来问题
-v2.0.3:
-    date:2020-08-25
-    changes:
-      -  添加新的配置项readonly用来设置当前编辑器界面是否可以编辑，默认可编辑
-v2.0.4:
-    date:2020-10-09
-    changes:
-      -  添加新的配置项noLineNumber用来设置当前编辑器界面行号是否可见，默认可见
-v2.1.0:
-    date:2020-10-12
-    changes:
-      -  新增命令行操作模式方法this.terminal()
-v2.1.1:
-    date:2020-10-21
-    changes:
-      -  新增命令行命令（下列命令都因为安全问题需要用户主动触发才可以正确执行）
-          ctrl+c：复制当前选中的内容
-          ctrl+x：剪切当前选中的内容
-v2.1.2:
+      - 添加内置着色器功能：html+css+javascript
+v0.2.1:
     date:2021-01-13
     changes:
       - 修复编辑器第一行编辑页面更新错误
+v0.2.2:
+    date:2021-01-13
+    changes:
+      - 对于开头无复用的情况下，如果新增的多于一行改动顺序错误的问题进行修复
+v0.2.3:
+    date:2021-01-21
+    changes:
+      - 支持MAC电脑的 command+ 操作
+v0.3.0:
+    date:2021-01-23
+    changes:
+      - 新增 this.copy() 复制当前编辑器代码到电脑剪切板功能
+v0.3.1:
+    date:2021-07-12
+    changes:
+      - 新增 this.valueOf(content) 设置内容功能
+      - 优化鼠标选择：https://github.com/hai2007/Open-Web-Editor/issues/4

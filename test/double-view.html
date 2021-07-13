@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多编辑界面 | 用例测试</title>
+    <script src="../dist/open-web-editor.js"></script>
+    <style>
+        div.owe {
+            width: 400px;
+            height: 300px;
+            border: 1px solid red;
+        }
+
+        div.owe:focus {
+            outline: 3px solid rgb(23, 85, 126);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="owe1" class='owe'></div>
+    <div id="owe2" class='owe'></div>
+
+    <script>
+
+        var owe1 = new OpenWebEditor({
+            el: document.getElementById('owe1'),
+            content: "第一个编辑器\n输入内容"
+        });
+
+        var owe2 = new OpenWebEditor({
+            el: document.getElementById('owe2'),
+            content: "第二个编辑器\n输入内容"
+        });
+
+        console.log(owe1, owe2);
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>辅助输入 | 用例测试</title>
+    <script src="../dist/open-web-editor.js"></script>
+    <style>
+        div.owe {
+            width: 400px;
+            height: 300px;
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="owe1" class='owe'></div>
+
+    <script>
+
+        var owe1 = new OpenWebEditor({
+            el: document.getElementById('owe1'),
+            content: "测试辅助输入\n输入内容",
+
+            // 辅助输入
+            input: function (dom, options, contentArray) {
+
+                dom.innerHTML = "date:" + new Date().valueOf();
+
+                // 你可以通过options来定位dom
+                // 由于dom可以定制化，因此可以显示出来辅助输入
+
+
+                console.log(dom, options, contentArray);
+
+                return {
+                    "up": function () {
+
+                        console.log('up');
+                        return false;
+                    },
+                    "down": function () {
+
+                        console.log('down');
+
+                        // 确定了输入内容以后，使用owe.input()方法输入即可
+                        owe1.input(dom.innerHTML);
+
+                        dom.innerHTML = "";
+
+                        return false;
+                    },
+                    "enter": function () {
+
+                        console.log('enter');
+                        return false;
+                    }
+                };
+            },
+        });
+
+        console.log(owe1);
+
+    </script>
+
+</body>
+
+</html>

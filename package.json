@@ -1,42 +1,36 @@
 {
-  "name": "wscode",
-  "version": "2.1.2",
-  "description": "🎉 An Editor Used on the Browser Side.",
-  "main": "dist/wscode.min.js",
+  "name": "open-web-editor",
+  "version": "0.3.1",
+  "description": "✍️ An Editor Used on the Browser Side.",
+  "main": "dist/open-web-editor.min.js",
   "scripts": {
     "start": "npm install && npm run build",
-    "build": "npm run build:init && npm run build:bundle && npm run build:babel && npm run build:uglifyjs && npm run build:end",
-    "build:init": "hai2007_nodejs --config ./hai2007_nodejs.config.js init",
-    "build:end": "hai2007_nodejs --config ./hai2007_nodejs.config.js end",
-    "build:bundle": "hai2007_nodejs --config ./hai2007_nodejs.config.js bundle",
-    "build:babel": "hai2007_nodejs --config ./hai2007_nodejs.config.js babel",
-    "build:uglifyjs": "hai2007_nodejs --config ./hai2007_nodejs.config.js uglifyjs"
+    "build": "hai2007_nodejs --config hai2007_nodejs.config.js init && hai2007_nodejs --config hai2007_nodejs.config.js bundle && hai2007_nodejs --config hai2007_nodejs.config.js babel && hai2007_nodejs --config hai2007_nodejs.config.js uglifyjs && hai2007_nodejs --config hai2007_nodejs.config.js end"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yelloxing/Web-Studio-Code.git"
+    "url": "git+https://github.com/hai2007/Open-Web-Editor.git"
   },
   "keywords": [
-    "wscode",
-    "vscode",
-    "edit",
-    "web"
+    "web",
+    "editor"
   ],
-  "author": "心叶",
+  "author": "你好2007",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yelloxing/Web-Studio-Code/issues"
+    "url": "https://github.com/hai2007/Open-Web-Editor/issues"
   },
-  "homepage": "https://github.com/yelloxing/Web-Studio-Code#readme",
+  "homepage": "https://github.com/hai2007/Open-Web-Editor#readme",
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
-    "@hai2007/nodejs": "^0.1.0",
+    "@hai2007/nodejs": "^1.0.0",
     "@rollup/plugin-commonjs": "^11.1.0",
     "@rollup/plugin-node-resolve": "^7.1.3",
-    "@yelloxing/core.js": "^0.3.7",
-    "@yelloxing/normalize.css": "^0.2.2",
     "rollup": "^1.17.0",
     "uglify-js": "^3.5.6"
+  },
+  "dependencies": {
+    "@hai2007/tool": "^0.6.1"
   }
 }

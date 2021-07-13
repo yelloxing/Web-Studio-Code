@@ -8,19 +8,17 @@ const cp = require('child_process');
 // 生成banner
 let banner = function (pkg) {
     return `/*!
-* web Studio Code - `+ pkg.description + `
-* `+ pkg.repository.url + `
+* Open Web Editor - ${pkg.description}
+* ${pkg.repository.url}
 *
-* author `+ pkg.author + `
+* author ${pkg.author}
 *
-* version `+ pkg.version + `
+* version ${pkg.version}
 *
-* build Fri May 08 2020
+* Copyright (c) 2020-2021 hai2007 走一步，再走一步。
+* Released under the ${pkg.license} license
 *
-* Copyright yelloxing
-* Released under the `+ pkg.license + ` license
-*
-* Date:`+ new Date() + `
+* Date:${new Date()}
 */\n\n`;
 
 };
@@ -73,8 +71,8 @@ module.exports = {
                 });
             };
 
-            printFileSize(1, './dist/wscode.js');
-            printFileSize(2, './dist/wscode.min.js');
+            printFileSize(1, './dist/open-web-editor.js');
+            printFileSize(2, './dist/open-web-editor.min.js');
 
         },
 
@@ -123,12 +121,12 @@ module.exports = {
          */
         babel(hai2007_nodejs, pkg) {
 
-            hai2007_nodejs.log("\n[2]babel转义:./dist/module.new.js → ./dist/wscode.js\n");
+            hai2007_nodejs.log("\n[2]babel转义:./dist/module.new.js → ./dist/open-web-editor.js\n");
 
             babel.transformFile("./dist/module.new.js", {}, function (err, result) {
                 if (!err) {
-                    fs.writeFileSync("./dist/wscode.js", banner(pkg));
-                    fs.appendFileSync("./dist/wscode.js", result.code);
+                    fs.writeFileSync("./dist/open-web-editor.js", banner(pkg));
+                    fs.appendFileSync("./dist/open-web-editor.js", result.code);
                     hai2007_nodejs.deleteSync("./dist/module.new.js");
 
                     hai2007_nodejs.error('转义完毕');
@@ -144,15 +142,15 @@ module.exports = {
          */
         uglifyjs(hai2007_nodejs, pkg) {
 
-            hai2007_nodejs.log("\n[3]压缩代码:./dist/wscode.js → ./dist/wscode.min.js\n");
+            hai2007_nodejs.log("\n[3]压缩代码:./dist/open-web-editor.js → ./dist/open-web-editor.min.js\n");
 
-            cp.exec("uglifyjs ./dist/wscode.js -m -o ./dist/uglifyjs.new.js", function (error) {
+            cp.exec("uglifyjs ./dist/open-web-editor.js -m -o ./dist/uglifyjs.new.js", function (error) {
                 if (error) {
                     console.log(error);
                 } else {
 
-                    fs.writeFileSync("./dist/wscode.min.js", banner(pkg));
-                    fs.appendFileSync("./dist/wscode.min.js", fs.readFileSync("./dist/uglifyjs.new.js"));
+                    fs.writeFileSync("./dist/open-web-editor.min.js", banner(pkg));
+                    fs.appendFileSync("./dist/open-web-editor.min.js", fs.readFileSync("./dist/uglifyjs.new.js"));
 
                     hai2007_nodejs.error('压缩完毕');
                 }

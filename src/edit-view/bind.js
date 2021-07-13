@@ -1,5 +1,5 @@
-import keyString from '@yelloxing/core.js/tools/keyString';
-import isFunction from '@yelloxing/core.js/isFunction';
+import getKeyString from '@hai2007/tool/getKeyString';
+import { isFunction } from '@hai2007/tool/type';
 import xhtml from '../xhtml';
 import { getInputMessage } from './tool';
 
@@ -78,7 +78,7 @@ export default function () {
 
     // 鼠标分开或移出的时候，标记鼠标放开
     xhtml.bind(this._el, 'mouseup', () => mouseDown = false);
-    xhtml.bind(this._el, 'mouseout', () => mouseDown = false);
+    // xhtml.bind(this._el, 'mouseout', () => mouseDown = false);
 
     // 点击编辑界面
     xhtml.bind(this._el, 'click', event => {
@@ -129,8 +129,14 @@ export default function () {
 
             let textArray = text.split(/\n/);
 
+            if (this._contentArray == null) {
+                this._contentArray = textArray;
+                this.__lineNum = this._contentArray.length - 1;
+                this.__leftNum = this._contentArray[this.__lineNum].length;
+            }
+
             // 如果只有一行文本(分开是为了加速)
-            if (textArray.length <= 1) {
+            else if (textArray.length <= 1) {
                 this._contentArray[this.__lineNum] = this._contentArray[this.__lineNum].substring(0, this.__leftNum) + text + this._contentArray[this.__lineNum].substring(this.__leftNum);
                 this.__leftNum += text.length;
             }
@@ -196,12 +202,28 @@ export default function () {
         }
     });
 
+    // 记录此刻MAC电脑的Command是否按下
+    let macCommand = false;
+
+    xhtml.bind(this._el, 'keyup', event => {
+
+        let keyStringCode = getKeyString(event);
+
+        if (keyStringCode == 'command') macCommand = false;
+
+    });
+
     // 处理键盘控制
     xhtml.bind(this._el, 'keydown', event => {
 
-        let terminal = this._el.wscode_terminal;
-        let keyStringCode = terminal == 'none' ? keyString(event) : terminal;
-        this._el.wscode_terminal = 'none';
+        let keyStringCode = getKeyString(event);
+
+        if (keyStringCode == 'command') macCommand = true;
+
+        // 如果Command被按下，就需要补充ctrl以兼容MAC电脑
+        if (macCommand && ['a', 'c', 'x'].indexOf(keyStringCode) > -1) {
+            keyStringCode = "ctrl+" + keyStringCode;
+        }
 
         // 辅助输入前置拦截
 
@@ -219,7 +241,7 @@ export default function () {
 
         // 只读模式需要拦截部分快捷键
         // 命令行不拦截
-        if (terminal == 'none' && this._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return;
+        if (this._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return;
 
         // 进入常规快捷键
 

@@ -1,17 +1,15 @@
 /*!
-* web Studio Code - 🎉 An Editor Used on the Browser Side.
-* git+https://github.com/yelloxing/Web-Studio-Code.git
+* Open Web Editor - ✍️ An Editor Used on the Browser Side.
+* git+https://github.com/hai2007/Open-Web-Editor.git
 *
-* author 心叶
+* author 你好2007
 *
-* version 2.1.2
+* version 0.3.1
 *
-* build Fri May 08 2020
-*
-* Copyright yelloxing
+* Copyright (c) 2020-2021 hai2007 走一步，再走一步。
 * Released under the MIT license
 *
-* Date:Wed Jan 13 2021 17:05:48 GMT+0800 (GMT+08:00)
+* Date:Mon Jul 12 2021 14:18:22 GMT+0800 (中国标准时间)
 */
 
 "use strict";
@@ -34,14 +32,25 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 (function () {
   'use strict';
+  /**
+   * 判断一个值是不是Object。
+   *
+   * @param {*} value 需要判断类型的值
+   * @returns {boolean} 如果是Object返回true，否则返回false
+   */
 
   var _dictionary;
+
+  function _isObject(value) {
+    var type = _typeof(value);
+
+    return value != null && (type === 'object' || type === 'function');
+  }
 
   var toString = Object.prototype.toString;
   /**
    * 获取一个值的类型字符串[object type]
    *
-   * @private
    * @param {*} value 需要返回类型的值
    * @returns {string} 返回类型字符串
    */
@@ -54,15 +63,44 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     return toString.call(value);
   }
   /**
-   * 判断一个值是不是一个朴素的'对象'
+   * 判断一个值是不是String。
    *
-   * @private
+   * @param {*} value 需要判断类型的值
+   * @returns {boolean} 如果是String返回true，否则返回false
+   */
+
+
+  function _isString(value) {
+    var type = _typeof(value);
+
+    return type === 'string' || type === 'object' && value != null && !Array.isArray(value) && getType(value) === '[object String]';
+  }
+  /**
+   * 判断一个值是不是Function。
+   *
+   * @param {*} value 需要判断类型的值
+   * @returns {boolean} 如果是Function返回true，否则返回false
+   */
+
+
+  function _isFunction(value) {
+    if (!_isObject(value)) {
+      return false;
+    }
+
+    var type = getType(value);
+    return type === '[object Function]' || type === '[object AsyncFunction]' || type === '[object GeneratorFunction]' || type === '[object Proxy]';
+  }
+  /**
+   * 判断一个值是不是一个朴素的'对象'
+   * 所谓"纯粹的对象"，就是该对象是通过"{}"或"new Object"创建的
+   *
    * @param {*} value 需要判断类型的值
    * @returns {boolean} 如果是朴素的'对象'返回true，否则返回false
    */
 
 
-  function isPlainObject(value) {
+  function _isPlainObject(value) {
     if (value === null || _typeof(value) !== 'object' || getType(value) != '[object Object]') {
       return false;
     } // 如果原型为null
@@ -80,19 +118,23 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
     return Object.getPrototypeOf(value) === proto;
   }
-  /**
-   * 判断一个值是不是结点元素。
-   *
-   * @since V0.1.2
-   * @public
-   * @param {*} value 需要判断类型的值
-   * @returns {boolean} 如果是结点元素返回true，否则返回false
-   */
+
+  var domTypeHelp = function domTypeHelp(types, value) {
+    return value !== null && _typeof(value) === 'object' && types.indexOf(value.nodeType) > -1 && !_isPlainObject(value);
+  };
+
+  var isString = _isString; // 引用类型
+
+  var isFunction = _isFunction;
+
+  var isArray = function isArray(input) {
+    return Array.isArray(input);
+  }; // 结点类型
 
 
-  function isElement(value) {
-    return value !== null && _typeof(value) === 'object' && (value.nodeType === 1 || value.nodeType === 9 || value.nodeType === 11) && !isPlainObject(value);
-  }
+  var isElement = function isElement(input) {
+    return domTypeHelp([1, 9, 11], input);
+  };
 
   var xhtml = {
     // 阻止冒泡
@@ -125,13 +167,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }
     },
     // 触发事件
-    "trigger": function trigger(dom, eventType, terminal) {
-      var event; // 为命令行准备的
-
-      if (arguments.length > 2) {
-        dom.wscode_terminal = terminal;
-      } //创建event的对象实例。
-
+    "trigger": function trigger(dom, eventType) {
+      var event; //创建event的对象实例。
 
       if (document.createEventObject) {
         // IE浏览器支持fireEvent方法
@@ -205,7 +242,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       return temp;
     },
     // 复制到剪切板
-    "copy": function copy(text) {
+    "copy": function copy(text, callback, errorback) {
       var el = this.appendTo(document.body, '<textarea>' + text + '</textarea>'); // 执行复制
 
       el.select();
@@ -214,66 +251,17 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         var result = window.document.execCommand("copy", false, null);
 
         if (result) {
-          console.log('已经复制到剪切板！');
+          if (isFunction(callback)) callback();
         } else {
-          console.log('复制到剪切板失败！');
+          if (isFunction(errorback)) errorback();
         }
       } catch (e) {
-        console.error(e);
-        console.log('复制到剪切板失败！');
+        if (isFunction(errorback)) errorback(e);
       }
 
       document.body.removeChild(el);
     }
-  };
-  /**
-   * 判断一个值是不是String。
-   *
-   * @since V0.1.2
-   * @public
-   * @param {*} value 需要判断类型的值
-   * @returns {boolean} 如果是String返回true，否则返回false
-   */
-
-  function isString(value) {
-    var type = _typeof(value);
-
-    return type === 'string' || type === 'object' && value != null && !Array.isArray(value) && getType(value) === '[object String]';
-  }
-  /**
-   * 判断一个值是不是Object。
-   *
-   * @since V0.1.2
-   * @public
-   * @param {*} value 需要判断类型的值
-   * @returns {boolean} 如果是Object返回true，否则返回false
-   */
-
-
-  function isObject(value) {
-    var type = _typeof(value);
-
-    return value != null && (type === 'object' || type === 'function');
-  }
-  /**
-   * 判断一个值是不是Function。
-   *
-   * @since V0.1.2
-   * @public
-   * @param {*} value 需要判断类型的值
-   * @returns {boolean} 如果是Function返回true，否则返回false
-   */
-
-
-  function isFunction(value) {
-    if (!isObject(value)) {
-      return false;
-    }
-
-    var type = getType(value);
-    return type === '[object Function]' || type === '[object AsyncFunction]' || type === '[object GeneratorFunction]' || type === '[object Proxy]';
-  } // 计算文字长度
-
+  }; // 计算文字长度
 
   function textWidth(text) {
     this.__helpCalcDOM.innerText = text;
@@ -335,16 +323,16 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   } // 整理当前输入框信息
 
 
-  function getInputMessage(wscode) {
+  function getInputMessage(owe) {
     return {
       // 光标前面有多少个字符
-      leftNum: wscode.__leftNum,
+      leftNum: owe.__leftNum,
       // 当前行之前有多少行
-      lineNum: wscode.__lineNum,
+      lineNum: owe.__lineNum,
       // 光标left坐标
-      x: wscode.__cursorLeft,
+      x: owe.__cursorLeft,
       // 光标top坐标
-      y: wscode.__cursorTop,
+      y: owe.__cursorTop,
       // 一行文本的高
       lineHeight: 21
     };
@@ -472,7 +460,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         }
       } else {
         // 如果开头没有结点保留，为了简单，我们直接采用prependTo方法追加
-        for (var _i2 = 0; _i2 < this.__formatData.length - this.__diff.endNum; _i2++) {
+        for (var _i2 = this.__formatData.length - this.__diff.endNum - 1; _i2 >= 0; _i2--) {
           xhtml.prependTo(this.__showDOM, this.$$toTemplate(this.__formatData[_i2], _i2, this._noLineNumber));
         }
       } // 更新行号
@@ -621,7 +609,17 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     this.__leftNum = this.__cursor1.leftNum = this.__cursor2.leftNum = beginCursor.leftNum;
     this.__lineNum = this.__cursor1.lineNum = this.__cursor2.lineNum = beginCursor.lineNum;
     this.$$cancelSelect();
-  } // 字典表
+  }
+  /*!
+   * 💡 - 获取键盘此时按下的键的组合结果
+   * https://github.com/hai2007/tool.js/blob/master/getKeyString.js
+   *
+   * author hai2007 < https://hai2007.gitee.io/sweethome >
+   *
+   * Copyright (c) 2021-present hai2007 走一步，再走一步。
+   * Released under the MIT license
+   */
+  // 字典表
 
 
   var dictionary = (_dictionary = {
@@ -711,11 +709,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   /**
    * 键盘按键
    * 返回键盘此时按下的键的组合结果
-   * @since V0.2.5
-   * @public
    */
 
-  function keyString(event) {
+  function getKeyString(event) {
     event = event || window.event;
     var keycode = event.keyCode || event.which;
     var key = dictionary[keycode] || keycode;
@@ -811,10 +807,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
     xhtml.bind(this._el, 'mouseup', function () {
       return mouseDown = false;
-    });
-    xhtml.bind(this._el, 'mouseout', function () {
-      return mouseDown = false;
-    }); // 点击编辑界面
+    }); // xhtml.bind(this._el, 'mouseout', () => mouseDown = false);
+    // 点击编辑界面
 
     xhtml.bind(this._el, 'click', function (event) {
       _this5.__helpInputDOM.innerHTML = '';
@@ -851,29 +845,34 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         _this5.__leftNum = 0;
       } // 否则就是一堆文本（包括复制来的）
       else {
-          var textArray = text.split(/\n/); // 如果只有一行文本(分开是为了加速)
+          var textArray = text.split(/\n/);
 
-          if (textArray.length <= 1) {
-            _this5._contentArray[_this5.__lineNum] = _this5._contentArray[_this5.__lineNum].substring(0, _this5.__leftNum) + text + _this5._contentArray[_this5.__lineNum].substring(_this5.__leftNum);
-            _this5.__leftNum += text.length;
-          } // 如果是复制的多行文本
-          else {
-              var _this5$_contentArray;
+          if (_this5._contentArray == null) {
+            _this5._contentArray = textArray;
+            _this5.__lineNum = _this5._contentArray.length - 1;
+            _this5.__leftNum = _this5._contentArray[_this5.__lineNum].length;
+          } // 如果只有一行文本(分开是为了加速)
+          else if (textArray.length <= 1) {
+              _this5._contentArray[_this5.__lineNum] = _this5._contentArray[_this5.__lineNum].substring(0, _this5.__leftNum) + text + _this5._contentArray[_this5.__lineNum].substring(_this5.__leftNum);
+              _this5.__leftNum += text.length;
+            } // 如果是复制的多行文本
+            else {
+                var _this5$_contentArray;
 
-              // 需要切割的行两边文本
-              var leftText = _this5._contentArray[_this5.__lineNum].substring(0, _this5.__leftNum);
+                // 需要切割的行两边文本
+                var leftText = _this5._contentArray[_this5.__lineNum].substring(0, _this5.__leftNum);
 
-              var rightText = _this5._contentArray[_this5.__lineNum].substring(_this5.__leftNum); // 旧行文本拼接进来
+                var rightText = _this5._contentArray[_this5.__lineNum].substring(_this5.__leftNum); // 旧行文本拼接进来
 
 
-              textArray[0] = leftText + textArray[0];
-              textArray[textArray.length - 1] += rightText; // 新内容记录下来
+                textArray[0] = leftText + textArray[0];
+                textArray[textArray.length - 1] += rightText; // 新内容记录下来
 
-              (_this5$_contentArray = _this5._contentArray).splice.apply(_this5$_contentArray, [_this5.__lineNum, 1].concat(_toConsumableArray(textArray)));
+                (_this5$_contentArray = _this5._contentArray).splice.apply(_this5$_contentArray, [_this5.__lineNum, 1].concat(_toConsumableArray(textArray)));
 
-              _this5.__lineNum += textArray.length - 1;
-              _this5.__leftNum = textArray[textArray.length - 1].length - rightText.length;
-            }
+                _this5.__lineNum += textArray.length - 1;
+                _this5.__leftNum = textArray[textArray.length - 1].length - rightText.length;
+              }
         } // 着色并更新视图
 
 
@@ -910,12 +909,22 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
         if (_this5.$input != null) _this5.__helpInputEvent = _this5.$input(_this5.__helpInputDOM, getInputMessage(_this5), _this5._contentArray) || {};
       }
+    }); // 记录此刻MAC电脑的Command是否按下
+
+    var macCommand = false;
+    xhtml.bind(this._el, 'keyup', function (event) {
+      var keyStringCode = getKeyString(event);
+      if (keyStringCode == 'command') macCommand = false;
     }); // 处理键盘控制
 
     xhtml.bind(this._el, 'keydown', function (event) {
-      var terminal = _this5._el.wscode_terminal;
-      var keyStringCode = terminal == 'none' ? keyString(event) : terminal;
-      _this5._el.wscode_terminal = 'none'; // 辅助输入前置拦截
+      var keyStringCode = getKeyString(event);
+      if (keyStringCode == 'command') macCommand = true; // 如果Command被按下，就需要补充ctrl以兼容MAC电脑
+
+      if (macCommand && ['a', 'c', 'x'].indexOf(keyStringCode) > -1) {
+        keyStringCode = "ctrl+" + keyStringCode;
+      } // 辅助输入前置拦截
+
 
       if (_this5.__helpInputDOM.innerHTML != '') {
         var __helpInputEvent = _this5.__helpInputEvent[keyStringCode];
@@ -930,7 +939,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       // 命令行不拦截
 
 
-      if (terminal == 'none' && _this5._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return; // 进入常规快捷键
+      if (_this5._readonly && ['ctrl+a', 'ctrl+c'].indexOf(keyStringCode) < 0) return; // 进入常规快捷键
 
       switch (keyStringCode) {
         // 全选
@@ -1238,20 +1247,601 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     return oralStr.replace(/\t/g, tab);
   }
 
-  var wscode = function wscode(options) {
+  function _inner_CSS_shader(textString, colors) {
+    var shaderArray = []; // 当前面对的
+
+    var i = 0; // 获取往后n个值
+
+    var nextNValue = function nextNValue(n) {
+      return textString.substring(i, n + i > textString.length ? textString.length : n + i);
+    };
+
+    var template = ""; // 1:选择器 tag
+    // 2:属性名 attr
+    // 3:属性值 string
+
+    var state = "tag"; // 初始化模板，开始文本捕获
+
+    var initTemplate = function initTemplate() {
+      if (template != "") {
+        shaderArray.push({
+          color: {
+            tag: colors.selector,
+            attr: colors.attrKey,
+            string: colors.attrValue
+          }[state],
+          content: template
+        });
+      }
+
+      template = "";
+    };
+
+    while (true) {
+      /* 1.注释 */
+      if (nextNValue(2) == '/*') {
+        initTemplate();
+
+        while (nextNValue(2) !== '*/' && i < textString.length) {
+          template += textString[i++];
+        }
+
+        shaderArray.push({
+          color: colors.annotation,
+          content: template + nextNValue(2)
+        });
+        i += 2;
+        template = "";
+      }
+      /* 2.字符串 */
+      else if (["'", '"'].indexOf(nextNValue(1)) > -1) {
+          var strBorder = nextNValue(1);
+          initTemplate();
+
+          do {
+            template += textString[i++];
+          } while (nextNValue(1) != strBorder && i < textString.length); // 因为可能是没有字符导致的结束
+
+
+          if (nextNValue(1) != strBorder) {
+            strBorder = "";
+          } else {
+            i += 1;
+          }
+
+          shaderArray.push({
+            color: colors.attrValue,
+            content: template + strBorder
+          });
+          template = "";
+        }
+        /* 3.边界 */
+        else if ([":", '{', '}', ";"].indexOf(nextNValue(1)) > -1) {
+            initTemplate();
+            shaderArray.push({
+              color: colors.insign,
+              content: nextNValue(1)
+            });
+            template = "";
+
+            if (nextNValue(1) == '{' || nextNValue(1) == ';') {
+              state = 'attr';
+            } else if (nextNValue(1) == '}') {
+              state = 'tag';
+            } else {
+              state = 'string';
+            }
+
+            i += 1;
+          }
+          /* 追加字符 */
+          else {
+              if (i >= textString.length) {
+                initTemplate();
+                break;
+              } else {
+                template += textString[i++];
+              }
+            }
+    }
+
+    return shaderArray;
+  } // JS关键字
+
+
+  var keyWords = ["abstract", "arguments", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue", "debugger", "default", "delete", "do", "double", "else", "enum", "eval", "export", "extends", "false", "final", "finally", "float", "for", "function", "goto", "if", "implements", "import", "in", "instanceof", "int", "interface", "let", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "typeof", "var", "void", "volatile", "while", "with", "yield"];
+
+  function _inner_ES_shader(textString, colors) {
+    var shaderArray = []; // 当前面对的
+
+    var i = 0; // 获取往后n个值
+
+    var nextNValue = function nextNValue(n) {
+      return textString.substring(i, n + i > textString.length ? textString.length : n + i);
+    };
+
+    var template = ""; // 初始化模板，开始文本捕获
+
+    var initTemplate = function initTemplate() {
+      if (template != "") {
+        // 考虑开始的(
+        if (template[0] == '(') {
+          shaderArray.push({
+            color: colors.insign,
+            content: "("
+          });
+          template = template.substr(1);
+        }
+
+        shaderArray.push({
+          color: colors.text,
+          content: template
+        });
+      }
+
+      template = "";
+    };
+
+    while (true) {
+      /* 1.注释1 */
+      if (nextNValue(2) == '/*') {
+        initTemplate();
+
+        while (nextNValue(2) !== '*/' && i < textString.length) {
+          template += textString[i++];
+        }
+
+        shaderArray.push({
+          color: colors.annotation,
+          content: template + nextNValue(2)
+        });
+        i += 2;
+        template = "";
+      }
+      /* 2.注释2 */
+      else if (nextNValue(2) == '//') {
+          initTemplate();
+
+          while (nextNValue(1) !== '\n' && i < textString.length) {
+            template += textString[i++];
+          }
+
+          shaderArray.push({
+            color: colors.annotation,
+            content: template
+          });
+          template = "";
+        }
+        /* 3.字符串 */
+        else if (["'", '"', '`'].indexOf(nextNValue(1)) > -1) {
+            var strBorder = nextNValue(1);
+            initTemplate();
+
+            do {
+              template += textString[i++];
+            } while (nextNValue(1) != strBorder && i < textString.length); // 因为可能是没有字符导致的结束
+
+
+            if (nextNValue(1) != strBorder) {
+              strBorder = "";
+            } else {
+              i += 1;
+            }
+
+            shaderArray.push({
+              color: colors.string,
+              content: template + strBorder
+            });
+            template = "";
+          }
+          /* 4.函数定义 */
+          else if (nextNValue(1) == '(' && (template[0] == ' ' || i - template.length - 1 >= 0 && textString[i - template.length - 1] == " ")) {
+              shaderArray.push({
+                color: colors.funName,
+                content: template
+              });
+              i += 1;
+              template = "(";
+            }
+            /* 5.方法调用 */
+            else if (nextNValue(1) == '(') {
+                shaderArray.push({
+                  color: colors.execName,
+                  content: template
+                });
+                i += 1;
+                template = "(";
+              }
+              /* 6.边界 */
+              else if ([";", '{', '}', '(', ')', '.', '\n', '=', '+', '>', '<', '[', ']', '-', '*', '/', '^', '*', '!'].indexOf(nextNValue(1)) > -1) {
+                  initTemplate();
+                  shaderArray.push({
+                    color: colors.insign,
+                    content: nextNValue(1)
+                  });
+                  template = "";
+                  i += 1;
+                }
+                /* 7.关键字 */
+                else if (nextNValue(1) == ' ' && keyWords.indexOf(template.trim()) > -1) {
+                    shaderArray.push({
+                      color: colors.key,
+                      content: template + " "
+                    });
+                    template = "";
+                    i += 1;
+                  }
+                  /* 追加字符 */
+                  else {
+                      if (i >= textString.length) {
+                        initTemplate();
+                        break;
+                      } else {
+                        template += textString[i++];
+                      }
+                    }
+    }
+
+    return shaderArray;
+  }
+
+  function _inner_HTML_shader(textString, colors) {
+    var shaderArray = []; // 当前面对的
+
+    var i = 0; // 获取往后n个值
+
+    var nextNValue = function nextNValue(n) {
+      return textString.substring(i, n + i > textString.length ? textString.length : n + i);
+    };
+
+    var template = ""; // 初始化模板，开始文本捕获
+
+    var initTemplate = function initTemplate() {
+      if (template != "") {
+        shaderArray.push({
+          color: colors.text,
+          content: template
+        });
+      }
+
+      template = "";
+    }; // 匹配属性值模板
+
+
+    var getAttrValueTemplate = function getAttrValueTemplate() {
+      var endStr = " "; // 寻找属性值边界
+
+      if (nextNValue(1) == '"') endStr = '"';
+      if (nextNValue(1) == "'") endStr = "'"; // 到达边界前一直寻找下一个
+
+      do {
+        template += textString[i++];
+      } while (nextNValue(1) != endStr && i < textString.length); // 如果是匹配成功而不是匹配到末尾
+
+
+      if (endStr != " " && i < textString.length) {
+        template += endStr;
+        i += 1;
+      }
+
+      shaderArray.push({
+        color: colors.attrValue,
+        content: template
+      });
+      template = "";
+    };
+
+    while (true) {
+      /* 1.注释 */
+      if (nextNValue(4) == '<!--') {
+        initTemplate();
+
+        while (nextNValue(3) !== '-->' && i < textString.length) {
+          template += textString[i++];
+        }
+
+        shaderArray.push({
+          color: colors.annotation,
+          content: template + nextNValue(3)
+        });
+        i += 3;
+        template = "";
+      }
+      /* 2.</ */
+      else if (nextNValue(2) == '</') {
+          initTemplate();
+          shaderArray.push({
+            color: colors.insign,
+            content: "</"
+          });
+          i += 2;
+
+          while (nextNValue(1) !== '>' && i < textString.length) {
+            template += textString[i++];
+          }
+
+          if (template != "") {
+            shaderArray.push({
+              color: colors.node,
+              content: template
+            });
+            template = "";
+
+            if (i < textString.length) {
+              shaderArray.push({
+                color: colors.insign,
+                content: ">"
+              });
+              i += 1;
+            }
+          }
+        }
+        /* 3.< */
+        else if (nextNValue(1) == '<' && nextNValue(2) != '< ') {
+            var specialTag = "";
+            initTemplate();
+            shaderArray.push({
+              color: colors.insign,
+              content: "<"
+            });
+            i += 1; // 寻找标签名称
+
+            while (nextNValue(1) != '>' && nextNValue(1) != ' ' && i < textString.length) {
+              template += textString[i++];
+            }
+
+            if (template != '') {
+              // 针对style和script这样特殊的标签，内部需要调用对应的着色器着色
+              if (template == "style" || template == 'script') {
+                specialTag = "</" + template + ">";
+              }
+
+              shaderArray.push({
+                color: colors.node,
+                content: template
+              });
+              template = '';
+
+              if (i < textString.length) {
+                // 寻找标签属性
+                while (i < textString.length) {
+                  // 遇到这个表示标签结束了
+                  // 也就意味着标签匹配结束
+                  if (nextNValue(1) == ">") {
+                    initTemplate();
+                    shaderArray.push({
+                      color: colors.insign,
+                      content: ">"
+                    });
+                    i += 1;
+                    break;
+                  } // 如果是空格，表示是属性之间，接着查看下一个即可
+                  else if (nextNValue(1) != ' ') {
+                      initTemplate(); // 匹配属性名称
+
+                      if (nextNValue(1) != '"' && nextNValue(1) != "'") {
+                        // 如果不是=或>和空格就继续
+                        while (nextNValue(1) != "=" && nextNValue(1) != '>' && i < textString.length && nextNValue(1) != " ") {
+                          template += textString[i++];
+                        }
+
+                        if (template != "") {
+                          shaderArray.push({
+                            color: colors.attrKey,
+                            content: template
+                          });
+                          template = ""; // 如果下一个是=，就接着找属性值
+
+                          if (nextNValue(1) == '=') {
+                            shaderArray.push({
+                              color: colors.insign,
+                              content: "="
+                            });
+                            i += 1;
+
+                            if (i < textString.length && nextNValue(1) != " " && nextNValue(1) != '>') {
+                              // 寻找属性值
+                              getAttrValueTemplate();
+                            }
+                          }
+                        } else {
+                          template += textString[i++];
+                        }
+                      } else if (nextNValue(1) == '=') {
+                        shaderArray.push({
+                          color: colors.insign,
+                          content: "="
+                        });
+                        i += 1;
+                      } else {
+                        if (i < textString.length && nextNValue(1) != " " && nextNValue(1) != '>') {
+                          getAttrValueTemplate();
+                        }
+                      }
+                    } else {
+                      template += textString[i++];
+                    }
+                }
+              }
+            }
+
+            if (specialTag != "") {
+              var oldI = i,
+                  oldTemplate = template;
+
+              while (nextNValue(specialTag.length) != specialTag && i < textString.length) {
+                template += textString[i++];
+              }
+
+              if (i < textString.length) {
+                var langHelp = specialTag.replace(/<\//, '');
+                var innerShaderArray = {
+                  "style>": _inner_CSS_shader,
+                  "script>": _inner_ES_shader
+                }[langHelp](template, {
+                  "style>": colors._css,
+                  "script>": colors._javascript
+                }[langHelp]);
+                innerShaderArray.forEach(function (innerShader) {
+                  shaderArray.push(innerShader);
+                });
+                template = "";
+              } else {
+                template = oldTemplate;
+                i = oldI;
+              }
+            }
+          }
+          /* 追加字符 */
+          else {
+              if (i >= textString.length) {
+                initTemplate();
+                break;
+              } else {
+                template += textString[i++];
+              }
+            }
+    }
+
+    return shaderArray;
+  } // 合并内容
+
+
+  var toShaderReult = function toShaderReult(words) {
+    var resultData = [[]],
+        lineNum = 0;
+    words.forEach(function (word) {
+      var codeArray = word.content.split(/\n/);
+      resultData[lineNum].push({
+        color: word.color,
+        content: codeArray[0]
+      });
+
+      for (var index = 1; index < codeArray.length; index++) {
+        lineNum += 1;
+        resultData.push([]);
+        resultData[lineNum].push({
+          color: word.color,
+          content: codeArray[index]
+        });
+      }
+    });
+    return resultData;
+  }; // 初始化配置文件
+
+
+  var initConfig = function initConfig(init, data) {
+    for (var key in data) {
+      try {
+        init[key] = data[key];
+      } catch (e) {
+        throw new Error("Illegal property value！");
+      }
+    }
+
+    return init;
+  };
+
+  var _deafultColors_html = {
+    "text": "#000000",
+
+    /*文本颜色*/
+    "annotation": "#6a9955",
+
+    /*注释颜色*/
+    "insign": "#ffffff",
+
+    /*符号颜色*/
+    "node": "#1e50b3",
+
+    /*结点颜色*/
+    "attrKey": "#1e83b1",
+
+    /*属性名称颜色*/
+    "attrValue": "#ac4c1e"
+    /*属性值颜色*/
+
+  };
+  var _deafultColors_css = {
+    "annotation": "#6a9955",
+
+    /*注释颜色*/
+    "insign": "#ffffff",
+
+    /*符号颜色*/
+    "selector": "#1e50b3",
+
+    /*选择器*/
+    "attrKey": "#1e83b1",
+
+    /*属性名称颜色*/
+    "attrValue": "#ac4c1e"
+    /*属性值颜色*/
+
+  };
+  var _deafultColors_javascript = {
+    "text": "#000000",
+
+    /*文本颜色*/
+    "annotation": "#6a9955",
+
+    /*注释颜色*/
+    "insign": "#ffffff",
+
+    /*符号颜色*/
+    "key": "#ff0000",
+
+    /*关键字颜色*/
+    "string": "#ac4c1e",
+
+    /*字符串颜色*/
+    "funName": "#1e50b3",
+
+    /*函数名称颜色*/
+    "execName": "#1e83b1"
+    /*执行方法颜色*/
+
+  };
+
+  function innerShader(lang) {
+    var colors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var _inner_shader, _inner_colors;
+
+    if (lang == 'html') {
+      colors._css = initConfig(_deafultColors_css, colors.css);
+      colors._javascript = initConfig(_deafultColors_javascript, colors.javascript);
+      _inner_colors = initConfig(_deafultColors_html, colors);
+      _inner_shader = _inner_HTML_shader;
+    } else if (lang == 'css') {
+      _inner_colors = initConfig(_deafultColors_css, colors);
+      _inner_shader = _inner_CSS_shader;
+    } else if (lang == 'javascript') {
+      _inner_colors = initConfig(_deafultColors_javascript, colors);
+      _inner_shader = _inner_ES_shader;
+    } else {
+      throw new Error('Language not supported:' + lang + ",The languages available include: html、css、javascript!");
+    }
+
+    return function (textString) {
+      return toShaderReult(_inner_shader(textString, _inner_colors));
+    };
+  }
+
+  var owe = function owe(options) {
     var _this6 = this;
 
-    if (!(this instanceof wscode)) {
-      throw new Error('WSCode is a constructor and should be called with the `new` keyword');
+    if (!(this instanceof owe)) {
+      throw new Error('Open-Web-Editor is a constructor and should be called with the `new` keyword');
     }
     /**
-     * 
+     *
      * [格式化配置]
-     * 
+     *
      * 所有的配置校验和默认值设置等都应该在这里进行
      * 经过这里处理以后，后续不需要再进行校验了
      * 因此这里的内容的更改一定要慎重
-     * 
+     *
      */
     // 编辑器挂载点
 
@@ -1277,7 +1867,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       };
 
       this._el = options.el;
-      this._el.wscode_terminal = 'none'; // 公共配置
+      this._el.owe_terminal = 'none'; // 公共配置
 
       options.color = options.color || {};
       this._colorBackground = options.color.background || "#d6d6e4";
@@ -1316,7 +1906,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
       this._contentArray = isString(options.content) ? (this.$$filterText(options.content) + "").split("\n") : [""]; // 着色方法
 
-      this.$shader = isFunction(options.shader) ? options.shader : shader; // 格式化方法
+      this.$shader = isFunction(options.shader) ? options.shader : isArray(options.shader) ? innerShader.apply(void 0, _toConsumableArray(options.shader)) : shader; // 格式化方法
 
       this.$format = isFunction(options.format) ? options.format : format; // 辅助输入
 
@@ -1352,7 +1942,17 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     }; // 获取当前编辑器代码
 
 
-    this.valueOf = function () {
+    this.valueOf = function (content) {
+      if (content || content == '') {
+        // 先删除内容
+        _this6._contentArray = null; // 输入以触发更新
+
+        _this6.__focusDOM.value = content;
+        xhtml.trigger(_this6.__focusDOM, 'input');
+
+        _this6.__focusDOM.focus();
+      }
+
       return _this6._contentArray.join('\n');
     }; // 在当前光标位置输入新的内容
 
@@ -1392,69 +1992,37 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
       _this6.$$initView();
-    }; // 触发编辑器命令
+    }; // 复制当前编辑器代码到电脑剪切板
 
 
-    this.terminal = function (terminalString) {
-      switch (terminalString) {
-        case 'ctrl+a':
-          {
-            xhtml.trigger(_this6._el, 'keydown', 'ctrl+a');
-            break;
-          }
-
-        case 'ctrl+c':
-          {
-            xhtml.trigger(_this6._el, 'keydown', 'ctrl+c');
-            break;
-          }
-
-        case 'ctrl+x':
-          {
-            xhtml.trigger(_this6._el, 'keydown', 'ctrl+x');
-            break;
-          }
-
-        case 'delete':
-          {
-            xhtml.trigger(_this6._el, 'keydown', 'backspace');
-            break;
-          }
-
-        default:
-          {
-            console.error('Undefined command!');
-          }
-      }
-
-      return _this6;
+    this.copy = function (callback, errorback) {
+      xhtml.copy(_this6.valueOf(), callback, errorback);
     };
   }; // 挂载辅助方法
 
 
-  wscode.prototype.$$textWidth = textWidth;
-  wscode.prototype.$$bestLeftNum = bestLeftNum;
-  wscode.prototype.$$calcCanvasXY = calcCanvasXY;
-  wscode.prototype.$$selectIsNotBlank = selectIsNotBlank;
-  wscode.prototype.$$filterText = filterText;
-  wscode.prototype.$$toTemplate = toTemplate; // 挂载核心方法
+  owe.prototype.$$textWidth = textWidth;
+  owe.prototype.$$bestLeftNum = bestLeftNum;
+  owe.prototype.$$calcCanvasXY = calcCanvasXY;
+  owe.prototype.$$selectIsNotBlank = selectIsNotBlank;
+  owe.prototype.$$filterText = filterText;
+  owe.prototype.$$toTemplate = toTemplate; // 挂载核心方法
 
-  wscode.prototype.$$initDom = initDom;
-  wscode.prototype.$$initView = initView;
-  wscode.prototype.$$updateView = updateView;
-  wscode.prototype.$$updateSelectView = updateSelectView;
-  wscode.prototype.$$updateCursorPosition = updateCursorPosition;
-  wscode.prototype.$$updateCanvasSize = updateCanvasSize;
-  wscode.prototype.$$cancelSelect = cancelSelect;
-  wscode.prototype.$$deleteSelect = deleteSelect;
-  wscode.prototype.$$bindEvent = bindEvent; // 性能优化系列方法
+  owe.prototype.$$initDom = initDom;
+  owe.prototype.$$initView = initView;
+  owe.prototype.$$updateView = updateView;
+  owe.prototype.$$updateSelectView = updateSelectView;
+  owe.prototype.$$updateCursorPosition = updateCursorPosition;
+  owe.prototype.$$updateCanvasSize = updateCanvasSize;
+  owe.prototype.$$cancelSelect = cancelSelect;
+  owe.prototype.$$deleteSelect = deleteSelect;
+  owe.prototype.$$bindEvent = bindEvent; // 性能优化系列方法
 
-  wscode.prototype.$$diff = diff;
-  wscode.author = '心叶（yelloxing@gmail.com）';
+  owe.prototype.$$diff = diff;
 
   if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
-    module.exports = wscode;
+    module.exports = owe;
   } else {
-    window.WSCode = wscode;
+    window.OpenWebEditor = owe;
   }
 })();

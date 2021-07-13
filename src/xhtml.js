@@ -1,4 +1,4 @@
-import isElement from '@yelloxing/core.js/isElement';
+import { isElement, isFunction } from '@hai2007/tool/type';
 
 export default {
 
@@ -32,13 +32,8 @@ export default {
     },
 
     // 触发事件
-    "trigger": function (dom, eventType,terminal) {
+    "trigger": function (dom, eventType) {
         let event;
-
-        // 为命令行准备的
-        if(arguments.length>2){
-            dom.wscode_terminal=terminal;
-        }
 
         //创建event的对象实例。
         if (document.createEventObject) {
@@ -68,8 +63,8 @@ export default {
         return null;
     },
 
-     // 追加结点(内部结尾)
-     "appendTo": function (el, template) {
+    // 追加结点(内部结尾)
+    "appendTo": function (el, template) {
         let node = isElement(template) ? template : this.toNode(template);
         el.appendChild(node);
         return node;
@@ -129,7 +124,7 @@ export default {
     },
 
     // 复制到剪切板
-    "copy": function (text) {
+    "copy": function (text, callback, errorback) {
 
         let el = this.appendTo(document.body, '<textarea>' + text + '</textarea>');
 
@@ -139,13 +134,12 @@ export default {
             let result = window.document.execCommand("copy", false, null);
 
             if (result) {
-                console.log('已经复制到剪切板！');
+                if (isFunction(callback)) callback();
             } else {
-                console.log('复制到剪切板失败！');
+                if (isFunction(errorback)) errorback();
             }
         } catch (e) {
-            console.error(e);
-            console.log('复制到剪切板失败！');
+            if (isFunction(errorback)) errorback(e);
         }
 
         document.body.removeChild(el);

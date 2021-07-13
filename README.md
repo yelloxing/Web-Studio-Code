@@ -1,37 +1,37 @@
-> 本项目已经停止维护，获取最新版本的更新请使用兼容的新产品[Open-Web-Editor](https://github.com/hai2007/Open-Web-Editor)代替。
+# Open Web Editor - ✍️ Web版本的可扩展代码编辑器
 
-<p align="center"><a href="https://github.com/yelloxing/Web-Studio-Code" target="_blank" rel="noopener noreferrer">
-<img width="400" src="https://yelloxing.github.io/Web-Studio-Code/logo.png" alt="Web Studio Code"></a></p>
-
-# 🎉 Web Studio Code - An Editor Used on the Browser Side.
-
-<p align="center">
-<a href="https://yelloxing.github.io/npm-downloads/?interval=7&packages=wscode"><img src="https://img.shields.io/npm/dm/wscode.svg" alt="Downloads"></a>
-<a href="https://packagephobia.now.sh/result?p=wscode"><img src="https://packagephobia.now.sh/badge?p=wscode" alt="install size"></a>
-<a href="https://www.jsdelivr.com/package/npm/wscode"><img src="https://data.jsdelivr.com/v1/package/npm/wscode/badge" alt="CDN"></a>
-<a href="https://www.npmjs.com/package/wscode"><img src="https://img.shields.io/npm/v/wscode.svg" alt="Version"></a>
-<a href="https://github.com/yelloxing/Web-Studio-Code/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/wscode.svg" alt="License"></a>
+<p>
+  <a href="https://hai2007.gitee.io/npm-downloads?interval=7&packages=open-web-editor"><img src="https://img.shields.io/npm/dm/open-web-editor.svg" alt="downloads"></a>
+  <a href="https://packagephobia.now.sh/result?p=open-web-editor"><img src="https://packagephobia.now.sh/badge?p=open-web-editor" alt="install size"></a>
+  <a href="https://www.jsdelivr.com/package/npm/open-web-editor"><img src="https://data.jsdelivr.com/v1/package/npm/open-web-editor/badge" alt="CDN"></a>
+  <a href="https://www.npmjs.com/package/open-web-editor"><img src="https://img.shields.io/npm/v/open-web-editor.svg" alt="Version"></a>
+  <a href="https://github.com/hai2007/Open-Web-Editor/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/open-web-editor.svg" alt="License"></a>
+  <a href="https://github.com/hai2007/Open-Web-Editor" target='_blank'>
+        <img alt="GitHub repo stars" src="https://img.shields.io/github/stars/hai2007/Open-Web-Editor?style=social">
+    </a>
 </p>
-
-<p align="center"><a href="https://yelloxing.github.io/Web-Studio-Code/Web-Studio-Code.html" target="_blank" rel="noopener noreferrer">
-<img width="500" src="https://yelloxing.github.io/Web-Studio-Code/snipping.png" alt="Web Studio Code"></a></p>
 
 > 温馨提示：使用过程中，你可以查看 [版本历史](./CHANGELOG) 来了解是否需要升级！
 
 > 兼容Chrome、Safari、Edge、Firefox、Opera和IE(9+)等常见浏览器！
+
+## Issues
+使用的时候遇到任何问题或有好的建议，请点击进入[issue](https://github.com/hai2007/Open-Web-Editor/issues)，欢迎参与维护！
+
+- 你可以查看[在线用例](https://hai2007.gitee.io/open-web-editor/test/index.html)来快速体验！
 
 ## 如何引入
 
 我们推荐你使用npm的方式安装和使用：
 
 ```bash
-npm install --save wscode
+npm install --save open-web-editor
 ```
 
 当然，你也可以通过CDN的方式引入：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/wscode"></script>
+<script src="https://cdn.jsdelivr.net/npm/open-web-editor@0"></script>
 ```
 
 ## 如何使用
@@ -39,12 +39,12 @@ npm install --save wscode
 - 特别注意：当前最后一个可用版本（非beta和alpha版本）请查看master分支的说明！
 
 ```js
-import WSCode from 'wscode';
+import OpenWebEditor from 'open-web-editor';
 
-var wscode = new WSCode({
+var owe = new OpenWebEditor({
 
     // 编辑器挂载点(必选)
-    el: document.getElementById('wscode'),
+    el: document.getElementById('owe'),
 
     // 初始化文本（可选）
     content: "初始化文本内容",
@@ -92,7 +92,6 @@ var wscode = new WSCode({
             //    ”up“:按下键盘向上键
             //    ”down“:按下键盘向下键
             //    等
-            // 具体的查看这里： https://yelloxing.github.io/core.js/tools-api/index.html#keyString
             "keyString":function(){
 
                 // 最后返回true或false,默认false表示阻止默认行为（或原有行为）
@@ -124,55 +123,105 @@ var wscode = new WSCode({
 });
 ```
 
-返回的wscode里面挂载着后续可控方法：
+返回的owe里面挂载着后续可控方法：
 
 - 格式化代码
 
 ```js
-wscode.format();
+owe.format();
 ```
 
 - 获取当前编辑器代码
 
 ```js
-wscode.valueOf();
+// 如果content传递了，会先设置内容
+owe.valueOf([content]);
+```
+
+- 复制当前编辑器代码到电脑剪切板
+
+```js
+// 成功回调和错误回调都非必输
+owe.copy(callback,errorback);
 ```
 
 - 编辑器管理的文本发生改变后会主动触发callback方法
 
 ```js
-wscode.updated(callback);
+owe.updated(callback);
 ```
 
 - 在当前光标位置输入新的内容
 
 ```js
 // cursor和length默认都是0，前者表示光标偏移量，后者表示替换个数
-wscode.input(content[, cursor, number]);
+owe.input(content[, cursor, number]);
 ```
 
-- 触发编辑器命令
+## 内置着色器
+
+对于上面的选项```shader```除了传递一个着色器方法外，还可以传递一个数组，以使用内置的着色器方法进行着色：
 
 ```js
-/**
- * 参数：terminalString 字符串类型，表示命令语句，有以下可选：
- *  1.'ctrl+a':全选
- *  2.'ctrl+c':复制
- *  3.'ctrl+x':剪切
- *  4.'delete':删除当前选中的内容
- * 
- * 温馨提示：需要注意的是，部分命令需要用户交互触发才可以成功，这主要是安全性问题导致的！
- */
-wscode.terminal(terminalString);
+new OpenWebEditor({
+    ...
+    // lang是一个字符串，表示需要着色的语言
+    // colors可选，表示使用的色彩
+    // 此外，colors具体有多项，都可选，配置你希望修改的即可，其余自动使用默认值
+    shader:[lang,colors]
+    ...
+});
 ```
 
-## 相关项目
+下面来列举出所有可选的语言：
 
-- [wscode-prettify](https://github.com/yelloxing/wscode-prettify)：通用的代码着色器
-- [Open-Code-Editor](https://github.com/yelloxing/Open-Code-Editor)：一个小巧且可个性化配置的代码编辑器
+### html
 
-## 开源协议
+```js
+shader:['html',{
+    "text": "#000000",/*文本颜色*/
+    "annotation": "#6a9955",/*注释颜色*/
+    "insign": "#ffffff",/*符号颜色*/
+    "node": "#1e50b3",/*结点颜色*/
+    "attrKey": "#1e83b1",/*属性名称颜色*/
+    "attrValue": "#ac4c1e",/*属性值颜色*/
+    "css":{
+        // 查看后续css语言部分
+    },
+    "javascript":{
+        // 查看后续javascript语言部分
+    }
+}]
+```
 
-[MIT](https://github.com/yelloxing/Web-Studio-Code/blob/master/LICENSE)
+### css
 
-Copyright (c) 2020 走一步 再走一步
+```js
+shader:['css',{
+    "annotation": "#6a9955",/*注释颜色*/
+    "insign": "#ffffff",/*符号颜色*/
+    "selector": "#1e50b3",/*选择器*/
+    "attrKey": "#1e83b1",/*属性名称颜色*/
+    "attrValue": "#ac4c1e"/*属性值颜色*/
+}]
+```
+
+### javascript
+
+```js
+shader:['javascript',{
+    "text": "#000000",/*文本颜色*/
+    "annotation": "#6a9955",/*注释颜色*/
+    "insign": "#ffffff",/*符号颜色*/
+    "key": "#ff0000",/*关键字颜色*/
+    "string": "#ac4c1e",/*字符串颜色*/
+    "funName": "#1e50b3",/*函数名称颜色*/
+    "execName": "#1e83b1"/*执行方法颜色*/
+}]
+```
+
+开源协议
+---------------------------------------
+[MIT](https://github.com/hai2007/Open-Web-Editor/blob/master/LICENSE)
+
+Copyright (c) 2020-2021 [hai2007](https://hai2007.gitee.io/sweethome/) 走一步，再走一步。

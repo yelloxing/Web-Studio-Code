@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无行号 | 用例测试</title>
+    <script src="../dist/open-web-editor.js"></script>
+    <style>
+        div.owe {
+            width: 400px;
+            height: 300px;
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="owe1" class='owe'></div>
+
+    <script>
+
+        var owe1 = new OpenWebEditor({
+            el: document.getElementById('owe1'),
+            content: "测试行号是否可以控制\n输入内容",
+            // readonly: true,
+            noLineNumber: true
+        });
+
+        console.log(owe1);
+
+    </script>
+
+</body>
+
+</html>

@@ -5,10 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>不可编辑界面 | 用例测试</title>
-    <script src="../../dist/wscode.js"></script>
-    <link rel="shortcut icon" href="../../logo.png">
+    <script src="../dist/open-web-editor.js"></script>
     <style>
-        div.wscode {
+        div.owe {
             width: 400px;
             height: 300px;
             border: 1px solid red;
@@ -18,17 +17,17 @@
 
 <body>
 
-    <div id="wscode1" class='wscode'></div>
+    <div id="owe1" class='owe'></div>
 
     <script>
 
-        var wscode1 = new WSCode({
-            el: document.getElementById('wscode1'),
+        var owe1 = new OpenWebEditor({
+            el: document.getElementById('owe1'),
             content: "不可编辑的编辑器\n输入内容",
-            readonly:true
+            readonly: true
         });
 
-        console.log(wscode1);
+        console.log(owe1);
 
     </script>
 

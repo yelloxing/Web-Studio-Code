@@ -1,9 +1,7 @@
 
 import xhtml from './xhtml';
 
-import isElement from '@yelloxing/core.js/isElement';
-import isString from '@yelloxing/core.js/isString';
-import isFunction from '@yelloxing/core.js/isFunction';
+import { isElement, isString, isFunction, isArray } from '@hai2007/tool/type';
 
 // 核心方法和工具方法
 
@@ -16,20 +14,24 @@ import diff from './edit-view/diff';
 
 import filterText from './edit-view/filter';
 
-let wscode = function (options) {
+// 内置着色器方法
 
-    if (!(this instanceof wscode)) {
-        throw new Error('WSCode is a constructor and should be called with the `new` keyword');
+import innerShader from './shader/index';
+
+let owe = function (options) {
+
+    if (!(this instanceof owe)) {
+        throw new Error('Open-Web-Editor is a constructor and should be called with the `new` keyword');
     }
 
     /**
-     * 
+     *
      * [格式化配置]
-     * 
+     *
      * 所有的配置校验和默认值设置等都应该在这里进行
      * 经过这里处理以后，后续不需要再进行校验了
      * 因此这里的内容的更改一定要慎重
-     * 
+     *
      */
 
     // 编辑器挂载点
@@ -46,7 +48,7 @@ let wscode = function (options) {
         let format = textString => textString;
 
         this._el = options.el;
-        this._el.wscode_terminal = 'none';
+        this._el.owe_terminal = 'none';
 
         // 公共配置
         options.color = options.color || {};
@@ -66,7 +68,7 @@ let wscode = function (options) {
         this._contentArray = isString(options.content) ? (this.$$filterText(options.content) + "").split("\n") : [""];
 
         // 着色方法
-        this.$shader = isFunction(options.shader) ? options.shader : shader;
+        this.$shader = isFunction(options.shader) ? options.shader : (isArray(options.shader) ? innerShader(...options.shader) : shader);
 
         // 格式化方法
         this.$format = isFunction(options.format) ? options.format : format;
@@ -106,7 +108,20 @@ let wscode = function (options) {
     };
 
     // 获取当前编辑器代码
-    this.valueOf = () => {
+    this.valueOf = (content) => {
+
+        if (content || content == '') {
+
+            // 先删除内容
+            this._contentArray = null;
+
+            // 输入以触发更新
+            this.__focusDOM.value = content;
+            xhtml.trigger(this.__focusDOM, 'input');
+            this.__focusDOM.focus();
+
+        }
+
         return this._contentArray.join('\n');
     };
 
@@ -155,67 +170,41 @@ let wscode = function (options) {
 
     };
 
-    // 触发编辑器命令
-    this.terminal = (terminalString) => {
-
-        switch (terminalString) {
-            case 'ctrl+a': {
-                xhtml.trigger(this._el, 'keydown', 'ctrl+a');
-                break;
-            }
-            case 'ctrl+c': {
-                xhtml.trigger(this._el, 'keydown', 'ctrl+c');
-                break;
-            }
-            case 'ctrl+x': {
-                xhtml.trigger(this._el, 'keydown', 'ctrl+x');
-                break;
-            }
-            case 'delete': {
-                xhtml.trigger(this._el, 'keydown', 'backspace');
-                break;
-            }
-            default: {
-                console.error('Undefined command!');
-            }
-
-        }
-        return this;
-
+    // 复制当前编辑器代码到电脑剪切板
+    this.copy = (callback, errorback) => {
+        xhtml.copy(this.valueOf(), callback, errorback);
     };
 
 };
 
 // 挂载辅助方法
-wscode.prototype.$$textWidth = textWidth;
-wscode.prototype.$$bestLeftNum = bestLeftNum;
-wscode.prototype.$$calcCanvasXY = calcCanvasXY;
-wscode.prototype.$$selectIsNotBlank = selectIsNotBlank;
-wscode.prototype.$$filterText = filterText;
-wscode.prototype.$$toTemplate = toTemplate;
+owe.prototype.$$textWidth = textWidth;
+owe.prototype.$$bestLeftNum = bestLeftNum;
+owe.prototype.$$calcCanvasXY = calcCanvasXY;
+owe.prototype.$$selectIsNotBlank = selectIsNotBlank;
+owe.prototype.$$filterText = filterText;
+owe.prototype.$$toTemplate = toTemplate;
 
 // 挂载核心方法
 
-wscode.prototype.$$initDom = initDom;
-wscode.prototype.$$initView = initView;
+owe.prototype.$$initDom = initDom;
+owe.prototype.$$initView = initView;
 
-wscode.prototype.$$updateView = updateView;
-wscode.prototype.$$updateSelectView = updateSelectView;
-wscode.prototype.$$updateCursorPosition = updateCursorPosition;
-wscode.prototype.$$updateCanvasSize = updateCanvasSize;
-wscode.prototype.$$cancelSelect = cancelSelect;
-wscode.prototype.$$deleteSelect = deleteSelect;
+owe.prototype.$$updateView = updateView;
+owe.prototype.$$updateSelectView = updateSelectView;
+owe.prototype.$$updateCursorPosition = updateCursorPosition;
+owe.prototype.$$updateCanvasSize = updateCanvasSize;
+owe.prototype.$$cancelSelect = cancelSelect;
+owe.prototype.$$deleteSelect = deleteSelect;
 
-wscode.prototype.$$bindEvent = bindEvent;
+owe.prototype.$$bindEvent = bindEvent;
 
 // 性能优化系列方法
 
-wscode.prototype.$$diff = diff;
-
-wscode.author = '心叶（yelloxing@gmail.com）';
+owe.prototype.$$diff = diff;
 
 if (typeof module === "object" && typeof module.exports === "object") {
-    module.exports = wscode;
+    module.exports = owe;
 } else {
-    window.WSCode = wscode;
+    window.OpenWebEditor = owe;
 }

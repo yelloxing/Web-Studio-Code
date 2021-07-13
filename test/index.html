@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Open Web Editor | ✍️ An Editor Used on the Browser Side.</title>
+    <script src="../dist/open-web-editor.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        div#owe {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .github {
+            position: fixed;
+            transform: rotate(45deg);
+            top: 60px;
+            line-height: 1.6em;
+            right: -60px;
+            background-color: #9e9695;
+            outline: 4px solid #9e9695;
+            transform-origin: 150px 23px;
+            border: 2px dashed #faf6f5;
+            width: 300px;
+            text-align: center;
+            color: #f7f3f2;
+            z-index: 2;
+            font-family: sans-serif;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="https://github.com/hai2007/Open-Web-Editor" class='github' target="_blank">Fork me on Github</a>
+
+    <div id="owe"></div>
+
+    <script>
+        window.owe = new OpenWebEditor({
+
+            // 编辑器挂载点
+            el: document.getElementById('owe'),
+
+            // 设置字体
+            "font-family": "serif",
+
+            // 设置字重
+            "font-weight": 800,
+
+            // 设置tab代表多少空格
+            tabSpace: 2,
+
+            // 着色器
+            shader: ['html', {
+                "text": "#000000",/*文本颜色*/
+                "annotation": "#6a9955",/*注释颜色*/
+                "insign": "#ffffff",/*符号颜色*/
+                "node": "#1e50b3",/*结点颜色*/
+                "attrKey": "#1e83b1",/*属性名称颜色*/
+                "attrValue": "#ac4c1e",/*属性值颜色*/
+                "css": {
+                    "annotation": "#6a9955",/*注释颜色*/
+                    "insign": "#ffffff",/*符号颜色*/
+                    "selector": "#1e50b3",/*选择器*/
+                    "attrKey": "#1e83b1",/*属性名称颜色*/
+                    "attrValue": "#ac4c1e"/*属性值颜色*/
+                },
+                "javascript": {
+                    "text": "#000000",/*文本颜色*/
+                    "annotation": "#6a9955",/*注释颜色*/
+                    "insign": "#ffffff",/*符号颜色*/
+                    "key": "#ff0000",/*关键字颜色*/
+                    "string": "#ac4c1e",/*字符串颜色*/
+                    "funName": "#1e50b3",/*函数名称颜色*/
+                    "execName": "#1e83b1"/*执行方法颜色*/
+                }
+            }],
+
+            // 初始化文本
+            content: "<html lang=\"zh-cn\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Example | Web Studio Code</title>\n    <style>\n        /*css样式*/\n        body {\n            margin: 0px;\n        }\n    </style>\n</head>\n<body>\n    <script>\n\n        /*js代码*/\n        function doit() {\n            console.log('你好，世界！');\n        }\n\n    \</script\>\n</body>\n</html>\n\n<!-- Developed by @hai2007 -->"
+            });
+
+        console.log(owe);
+
+        // 通过这个钩子，可以监听编辑器数据的改变
+        owe.updated(function(){
+            console.log('数据更新了'+new Date());
+        });
+
+    </script>
+
+</body>
+
+</html>
