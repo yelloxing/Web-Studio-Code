@@ -16,7 +16,7 @@ import filterText from './edit-view/filter';
 
 // 内置着色器方法
 
-import innerShader from './shader/index';
+import innerShader from '@hai2007/tool/Shader.js';
 
 let owe = function (options) {
 

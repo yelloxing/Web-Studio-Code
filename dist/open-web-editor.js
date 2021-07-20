@@ -4,12 +4,12 @@
 *
 * author 你好2007
 *
-* version 0.3.1
+* version 0.3.2
 *
 * Copyright (c) 2020-2021 hai2007 走一步，再走一步。
 * Released under the MIT license
 *
-* Date:Mon Jul 12 2021 14:18:22 GMT+0800 (中国标准时间)
+* Date:Tue Jul 20 2021 13:18:10 GMT+0800 (中国标准时间)
 */
 
 "use strict";
@@ -26,8 +26,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 (function () {
@@ -38,8 +36,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
    * @param {*} value 需要判断类型的值
    * @returns {boolean} 如果是Object返回true，否则返回false
    */
-
-  var _dictionary;
 
   function _isObject(value) {
     var type = _typeof(value);
@@ -622,7 +618,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   // 字典表
 
 
-  var dictionary = (_dictionary = {
+  var dictionary = {
     // 数字
     48: [0, ')'],
     49: [1, '!'],
@@ -702,8 +698,34 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     45: "insert",
     144: "number lock",
     145: "scroll lock",
-    12: "clear"
-  }, _defineProperty(_dictionary, "45", "insert"), _defineProperty(_dictionary, 19, "pause"), _defineProperty(_dictionary, 112, "f1"), _defineProperty(_dictionary, 113, "f2"), _defineProperty(_dictionary, 114, "f3"), _defineProperty(_dictionary, 115, "f4"), _defineProperty(_dictionary, 116, "f5"), _defineProperty(_dictionary, 117, "f6"), _defineProperty(_dictionary, 118, "f7"), _defineProperty(_dictionary, 119, "f8"), _defineProperty(_dictionary, 120, "f9"), _defineProperty(_dictionary, 121, "f10"), _defineProperty(_dictionary, 122, "f11"), _defineProperty(_dictionary, 123, "f12"), _defineProperty(_dictionary, 189, ["-", "_"]), _defineProperty(_dictionary, 187, ["=", "+"]), _defineProperty(_dictionary, 219, ["[", "{"]), _defineProperty(_dictionary, 221, ["]", "}"]), _defineProperty(_dictionary, 220, ["\\", "|"]), _defineProperty(_dictionary, 186, [";", ":"]), _defineProperty(_dictionary, 222, ["'", '"']), _defineProperty(_dictionary, 188, [",", "<"]), _defineProperty(_dictionary, 190, [".", ">"]), _defineProperty(_dictionary, 191, ["/", "?"]), _defineProperty(_dictionary, 192, ["`", "~"]), _dictionary); // 非独立键字典
+    12: "clear",
+    19: "pause",
+    // 功能键
+    112: "f1",
+    113: "f2",
+    114: "f3",
+    115: "f4",
+    116: "f5",
+    117: "f6",
+    118: "f7",
+    119: "f8",
+    120: "f9",
+    121: "f10",
+    122: "f11",
+    123: "f12",
+    // 余下键
+    189: ["-", "_"],
+    187: ["=", "+"],
+    219: ["[", "{"],
+    221: ["]", "}"],
+    220: ["\\", "|"],
+    186: [";", ":"],
+    222: ["'", '"'],
+    188: [",", "<"],
+    190: [".", ">"],
+    191: ["/", "?"],
+    192: ["`", "~"]
+  }; // 非独立键字典
 
   var help_key = ["shift", "ctrl", "alt"];
   /**
@@ -717,6 +739,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     var key = dictionary[keycode] || keycode;
     if (!key) return;
     if (key.constructor !== Array) key = [key, key];
+    var _key = key[0];
     var shift = event.shiftKey ? "shift+" : "",
         alt = event.altKey ? "alt+" : "",
         ctrl = event.ctrlKey ? "ctrl+" : "";
@@ -736,7 +759,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       resultKey = resultKey.replace(/\+$/, '');
     }
 
-    return resultKey;
+    return resultKey == '' ? _key : resultKey;
   } // 绑定键盘和鼠标等交互事件处理
 
 
@@ -1667,15 +1690,17 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
             if (specialTag != "") {
               var oldI = i,
-                  oldTemplate = template;
+                  oldTemplate = template,
+                  langHelp,
+                  innerShaderArray;
 
               while (nextNValue(specialTag.length) != specialTag && i < textString.length) {
                 template += textString[i++];
               }
 
               if (i < textString.length) {
-                var langHelp = specialTag.replace(/<\//, '');
-                var innerShaderArray = {
+                langHelp = specialTag.replace(/<\//, '');
+                innerShaderArray = {
                   "style>": _inner_CSS_shader,
                   "script>": _inner_ES_shader
                 }[langHelp](template, {
@@ -1711,13 +1736,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     var resultData = [[]],
         lineNum = 0;
     words.forEach(function (word) {
-      var codeArray = word.content.split(/\n/);
+      var codeArray = word.content.split(/\n/),
+          index;
       resultData[lineNum].push({
         color: word.color,
         content: codeArray[0]
       });
 
-      for (var index = 1; index < codeArray.length; index++) {
+      for (index = 1; index < codeArray.length; index++) {
         lineNum += 1;
         resultData.push([]);
         resultData[lineNum].push({
@@ -1731,7 +1757,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
   var initConfig = function initConfig(init, data) {
-    for (var key in data) {
+    var key;
+
+    for (key in data) {
       try {
         init[key] = data[key];
       } catch (e) {
@@ -1803,8 +1831,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
   };
 
-  function innerShader(lang) {
-    var colors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  function innerShader(lang, colors) {
+    colors = colors || {};
 
     var _inner_shader, _inner_colors;
 

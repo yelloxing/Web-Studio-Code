@@ -1,6 +1,6 @@
 {
   "name": "open-web-editor",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "✍️ An Editor Used on the Browser Side.",
   "main": "dist/open-web-editor.min.js",
   "scripts": {
@@ -31,6 +31,6 @@
     "uglify-js": "^3.5.6"
   },
   "dependencies": {
-    "@hai2007/tool": "^0.6.1"
+    "@hai2007/tool": "^0.9.0"
   }
 }

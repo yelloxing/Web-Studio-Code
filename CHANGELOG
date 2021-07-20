@@ -29,3 +29,7 @@ v0.3.1:
     changes:
       - 新增 this.valueOf(content) 设置内容功能
       - 优化鼠标选择：https://github.com/hai2007/Open-Web-Editor/issues/4
+v0.3.2:
+    date:2021-07-20
+    changes:
+      - 着色器代码交付给 ```tool.js``` 维护：https://github.com/hai2007/tool.js
